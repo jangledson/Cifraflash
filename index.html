@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cifra Flash Pro v34.0</title>
+    <title>Cifra Flash Pro v100.2 - Versão Final Blindada</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Montserrat:wght=700&family=Open+Sans&family=Playfair+Display&family=Bebas+Neue&family=Courier+Prime&family=Dancing+Script&family=Oswald&family=Ubuntu&family=Arvo&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -20,116 +20,107 @@
         body, html, button, input, h1, h2, .label-cfg, .preview-font-name { 
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
         }
-
         body, html { height: 100%; background-color: var(--ui-bg-dark); color: white; overflow: hidden; }
 
-        /* --- HOME --- */
         .home-container { 
-            position: absolute; 
-            width: 100%; 
-            height: 100%; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            z-index: 10; 
-            padding: 20px; 
-            background: var(--ui-bg-dark);
-            justify-content: flex-start;
+            position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; 
+            align-items: center; z-index: 10; padding: 20px; background: var(--ui-bg-dark); justify-content: flex-start;
         }
         .logo-central h1 { 
-            color: var(--ui-accent) !important; 
-            letter-spacing: 5px; 
-            text-shadow: 0 0 15px var(--ui-accent); 
-            font-size: 2.5rem; 
-            font-weight: 900; 
-            margin-top: 12vh; 
-            margin-bottom: 20px; 
-            text-align: center;
+            color: var(--ui-accent) !important; letter-spacing: 5px; text-shadow: 0 0 15px var(--ui-accent); 
+            font-size: 2.5rem; font-weight: 900; margin-top: 12vh; margin-bottom: 20px; text-align: center;
         }
         .busca-input { 
-            width: 95%; 
-            max-width: 480px; 
-            padding: 20px; 
-            border-radius: 15px; 
-            border: 2px solid var(--ui-accent) !important; 
-            background: rgba(0,255,255,0.1); 
-            color: white; 
-            font-size: 20px; 
-            text-align: center; 
-            outline: none;
-            margin-bottom: 25px;
+            width: 95%; max-width: 480px; padding: 20px; border-radius: 15px; border: 2px solid var(--ui-accent) !important; 
+            background: rgba(0,255,255,0.1); color: white; font-size: 20px; text-align: center; outline: none; margin-bottom: 25px;
+            user-select: text !important; -webkit-user-select: text !important;
         }
         
         #listaResultados { width: 100%; max-width: 500px; overflow-y: auto; flex: 1; display: none; padding-bottom: 150px; }
         .card-musica { background: rgba(255,255,255,0.08); padding: 12px 18px; border-radius: 15px; margin-bottom: 10px; border-left: 6px solid var(--ui-accent); display: flex; align-items: center; justify-content: space-between; text-transform: uppercase; }
         .btn-item-musica { background: none; border: none; color: white; text-align: left; font-size: 16px; font-weight: bold; flex: 1; padding: 10px 0; text-transform: uppercase; cursor: pointer; }
 
-        /* --- BOTÕES FLUTUANTES --- */
-        .btn-float { position: fixed !important; right: 25px !important; width: 70px !important; height: 70px !important; border-radius: 50% !important; background: #ffffff !important; color: #2c3e50 !important; font-size: 32px !important; z-index: 9999 !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 8px 25px rgba(0,0,0,0.6) !important; border: none !important; cursor: pointer; }
+        /* BOTÕES FLUTUANTES COM CAMADA Z-INDEX ELEVADA E TOQUE GARANTIDO */
+        .btn-float { 
+            position: fixed !important; 
+            right: 25px !important; 
+            width: 70px !important; 
+            height: 70px !important; 
+            border-radius: 50% !important; 
+            background: #ffffff !important; 
+            color: #2c3e50 !important; 
+            font-size: 32px !important; 
+            z-index: 12000 !important; 
+            display: flex !important; 
+            align-items: center !important; 
+            justify-content: center !important; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6) !important; 
+            border: none !important; 
+            cursor: pointer !important; 
+            pointer-events: auto !important;
+        }
         .btn-config { bottom: 35px !important; }
         .btn-setlist-home { bottom: 120px !important; }
         .btn-historico-home { bottom: 205px !important; }
 
-        /* --- TELA DA CIFRA --- */
         .tela-full { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; background: var(--dynamic-bg); overflow-y: auto; }
-        .header-cifra { position: fixed; top: 0; left: 0; width: 100%; background: #162431; padding: 10px; border-bottom: 3px solid var(--ui-accent); z-index: 11000; transition: transform 0.3s ease; }
-        .grid-controles { display: grid; grid-template-columns: 1.2fr 1fr 0.8fr 1.2fr 1fr; gap: 8px; margin-top: 5px; }
         
-        .bloco-ajuste { display: flex; background: #2c3e50; border-radius: 10px; overflow: hidden; border: 1px solid #456173; }
-        .bloco-ajuste button { flex: 1; border: none; background: none; color: white; font-size: 20px; cursor: pointer; }
-        .bloco-ajuste .info { flex: 1.2; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; color: var(--ui-accent); background: rgba(0,0,0,0.2); }
-
-        .btn-cmd-header { background: #2c3e50; color: white; border: 1px solid #456173; border-radius: 12px; font-weight: bold; font-size: 11px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
-        .btn-play-header { background: #27ae60; color: white; border: none; border-radius: 12px; font-weight: 900; font-size: 18px; cursor: pointer; }
-
-        /* TEXTO DA MÚSICA - EM FLUXO CONTÍNUO */
-        #viewTexto { 
-            white-space: pre-wrap; 
-            font-family: var(--current-family); 
-            font-size: var(--font-size); 
-            font-weight: var(--font-weight);
-            padding: 135px 22px 220px 22px; 
-            line-height: 1.4;
-        }
-
-        .linha-letra {
-            display: block;
-            color: var(--dynamic-text) !important;
-            margin: 0;
-            padding: 0;
-            min-height: 1.4em;
-        }
-
-        .linha-cifra {
-            display: block;
-            color: var(--dynamic-text) !important; 
-            font-weight: bold !important; 
-            margin: 0;
-            padding: 0;
-            min-height: 1.4em;
-        }
+        .header-cifra { position: fixed; top: 0; left: 0; width: 100%; background: #162431; padding: 12px 6px 14px 6px; border-bottom: 3px solid var(--ui-accent); z-index: 11000; transition: transform 0.3s ease; }
+        .grid-controles { display: grid; grid-template-columns: 0.6fr 1fr 1fr 1.2fr 0.8fr; gap: 6px; margin-top: 8px; }
         
-        .linha-vazia {
-            display: block;
-            min-height: 1.4em;
+        .btn-cmd-header, .bloco-ajuste, .btn-play-header {
+            position: relative;
+            transition: all 0.05s ease;
+            box-shadow: 0 4px 0px rgba(0,0,0,0.5), 0 4px 10px rgba(0,0,0,0.4);
         }
 
-        /* PAINEL DE CONTROLE DIREITO */
+        .btn-cmd-header { 
+            background: #2c3e50; color: white; border: 1px solid #456173; border-bottom: 4px solid #1a2530;
+            border-radius: 12px; font-weight: bold; font-size: 11px; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; cursor: pointer; height: 46px;
+        }
+        .btn-cmd-header:active {
+            transform: translateY(3px); border-bottom: 1px solid #1a2530;
+            box-shadow: 0 1px 0px rgba(0,0,0,0.5), 0 2px 5px rgba(0,0,0,0.4);
+        }
+
+        .btn-play-header { 
+            background: #27ae60; color: white; border: 1px solid #219653; border-bottom: 4px solid #1e7e43;
+            border-radius: 12px; font-weight: 900; font-size: 16px; cursor: pointer; height: 46px;
+        }
+        .btn-play-header:active {
+            transform: translateY(3px); border-bottom: 1px solid #1e7e43;
+            box-shadow: 0 1px 0px rgba(0,0,0,0.5), 0 2px 5px rgba(0,0,0,0.4);
+        }
+
+        .bloco-ajuste { 
+            display: flex; background: #2c3e50; border-radius: 12px; overflow: hidden; 
+            border: 1px solid #456173; border-bottom: 4px solid #1a2530; height: 46px;
+        }
+        .bloco-ajuste button { 
+            flex: 1; border: none; background: none; color: white; font-size: 18px; font-weight: bold;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; height: 100%;
+        }
+        .bloco-ajuste button:active { background: rgba(0, 0, 0, 0.2); }
+        .bloco-ajuste .info { 
+            flex: 1.4; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            font-size: 9px; color: var(--ui-accent); background: rgba(0,0,0,0.3); height: 100%;
+            border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        .bloco-ajuste:has(button:active) {
+            transform: translateY(2px); border-bottom: 2px solid #1a2530;
+            box-shadow: 0 2px 0px rgba(0,0,0,0.5), 0 3px 6px rgba(0,0,0,0.4);
+        }
+
+        #viewTexto { white-space: pre-wrap; font-family: var(--current-family); font-size: var(--font-size); font-weight: var(--font-weight); padding: 145px 22px 220px 22px; line-height: 1.4; }
+        .linha-letra { display: block; color: var(--dynamic-text) !important; margin: 0; padding: 0; min-height: 1.4em; }
+        .linha-cifra { display: block; color: var(--dynamic-text) !important; font-weight: bold !important; margin: 0; padding: 0; min-height: 1.4em; }
+        .linha-vazia { display: block; min-height: 1.4em; }
+
         .panel-right-control { 
-            position: fixed; 
-            bottom: 30px; 
-            right: 25px; 
-            width: 130px; 
-            background: rgba(22, 36, 49, 0.95); 
-            display: flex; 
-            flex-direction: column;
-            gap: 8px;
-            padding: 10px;
-            z-index: 11000; 
-            border-radius: 14px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.15);
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            position: fixed; bottom: 30px; right: 25px; width: 130px; background: rgba(22, 36, 49, 0.95); 
+            display: flex; flex-direction: column; gap: 8px; padding: 10px; z-index: 11000; border-radius: 14px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); transition: transform 0.3s ease, opacity 0.3s ease;
         }
         .row-arrows { display: flex; gap: 8px; width: 100%; }
         .btn-nav-pad { flex: 1; height: 48px; background: #34495e; color: white; border: none; border-radius: 8px; font-size: 22px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; }
@@ -139,10 +130,7 @@
         .footer-hidden { transform: translate(0, 150px); opacity: 0; pointer-events: none; } 
 
         .item-lista-geral { background: rgba(255,255,255,0.07); padding: 10px 15px; border-radius: 12px; margin-bottom: 8px; display: flex; align-items: center; text-transform: uppercase; border: 1px solid #34495e; }
-        .controles-ordem { display: flex; flex-direction: column; gap: 2px; margin-right: 15px; }
-        .btn-ordem { background: #456173; color: white; border: none; border-radius: 6px; padding: 5px; width: 40px; font-weight: bold; font-size: 16px; cursor: pointer; }
 
-        /* CONFIGURAÇÕES */
         .container-cfg { padding: 20px; max-width: 600px; margin: 0 auto; padding-bottom: 120px; display: flex; flex-direction: column; gap: 5px; }
         .label-cfg { color: var(--ui-accent); display: block; margin-top: 18px; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
         
@@ -162,7 +150,6 @@
         .btn-bold { width: 100%; padding: 15px; margin-top: 12px; background: #34495e; color: white; border: 1px solid #456173; border-radius: 10px; font-weight: 900; font-size: 18px; cursor: pointer; }
         .btn-bold.active { background: #f1c40f; color: black; box-shadow: 0 0 15px #f1c40f; }
 
-        /* EDITOR */
         .editor-fullscreen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff !important; color: #000000 !important; z-index: 99999; padding: 15px; flex-direction: column; }
         .editor-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 2px solid #ccc; margin-bottom: 10px; }
         .editor-textarea { flex: 1; width: 100%; background: #ffffff !important; color: #000000 !important; border: none; padding: 10px; font-family: monospace; font-size: 18px; font-weight: bold; outline: none; resize: none; user-select: text; -webkit-user-select: text; line-height: 1.4; }
@@ -176,20 +163,22 @@
     <div class="logo-central"><h1>CIFRA FLASH</h1></div>
     <input type="text" id="busca" class="busca-input" placeholder="Pesquisar música..." oninput="filtrar()" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
     <div id="listaResultados"></div>
+    
+    <button class="btn-float btn-historico-home" onclick="event.stopPropagation(); abrirTela('telaHistorico')">🕒</button>
+    <button class="btn-float btn-setlist-home" onclick="event.stopPropagation(); abrirTela('telaSetlist')">📂</button>
+    <button class="btn-float btn-config" onclick="event.stopPropagation(); abrirTela('telaConfig')">⚙️</button>
 </div>
-
-<button class="btn-float btn-historico-home" onclick="abrirTela('telaHistorico')">🕒</button>
-<button class="btn-float btn-setlist-home" onclick="abrirTela('telaSetlist')">📂</button>
-<button class="btn-float btn-config" onclick="abrirTela('telaConfig')">⚙️</button>
 
 <div id="telaCifra" class="tela-full">
     <div id="headerCifra" class="header-cifra">
         <h2 id="titulo" style="text-align:center; font-size:14px;">---</h2>
         <div class="grid-controles">
-            <div class="bloco-ajuste"><button onclick="mudarTom(-1)">▼</button><div class="info">TOM<br><b id="tomVal">0</b></div><button onclick="mudarTom(1)">▲</button></div>
-            <button class="btn-cmd-header" onclick="toggleModo()">MODO<br><b id="valModo">CIFRA</b></button>
-            <button class="btn-cmd-header" style="background:#f1c40f; color:#000;" onclick="abrirEditor()">EDIT</button>
+            <button class="btn-cmd-header" style="background:#f1c40f; color:#000; border-color:#d4ac0d; border-bottom-color:#9a7d0a;" onclick="abrirEditor()">EDIT</button>
             <div class="bloco-ajuste"><button onclick="ajustarVel(-1)">-</button><div class="info">VEL<br><b id="velVal">1</b></div><button onclick="ajustarVel(1)">+</button></div>
+            <div class="bloco-ajuste"><button onclick="ajustarTom(-1)">-</button><div class="info">TOM<br><b id="tomVal">0</b></div><button onclick="ajustarTom(1)">+</button></div>
+            
+            <button id="btnVisibilidadeCifra" class="btn-cmd-header" style="background:#2980b9; color:#fff; border-color:#3498db; border-bottom-color:#1f618d;" onclick="toggleVisibilidadeCifra()">CIFRA<br><b id="statusCifraText">ON</b></button>
+            
             <button id="btnScroll" class="btn-play-header" onclick="toggleScroll()">PLAY</button>
         </div>
     </div>
@@ -274,8 +263,9 @@
             </div>
         </div>
 
-        <button onclick="document.getElementById('files').click()" style="width:100%; padding:18px; background:#2ecc71; color:white; border-radius:12px; border:none; margin-top:30px; font-weight:bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">📥 IMPORTAR CIFRAS</button>
+        <button onclick="document.getElementById('files').click()" style="width:100%; padding:18px; background:#2ecc71; color:white; border-radius:12px; border:none; margin-top:30px; font-weight:bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">📥 IMPORTAR PASTA DE CIFRAS</button>
         <input type="file" id="files" webkitdirectory directory multiple onchange="importar(this)" style="display:none">
+        
         <button onclick="fechar()" style="width:100%; margin-top:10px; padding:15px; background:#ff4757; color:white; border-radius:12px; border:none; font-weight:bold;">VOLTAR</button>
     </div>
 </div>
@@ -303,24 +293,23 @@
 </div>
 
 <script>
-    let musicas = JSON.parse(localStorage.getItem('cifras_v3')) || [];
-    let setlistIds = JSON.parse(localStorage.getItem('setlist_flash')) || [];
-    let historicoIds = JSON.parse(localStorage.getItem('historico_flash')) || [];
+    let musicas = [], setlistIds = [], historicoIds = [];
+    try {
+        musicas = JSON.parse(localStorage.getItem('cifras_v3')) || [];
+        setlistIds = JSON.parse(localStorage.getItem('setlist_flash')) || [];
+        historicoIds = JSON.parse(localStorage.getItem('historico_flash')) || [];
+    } catch(e) {
+        console.error("Erro ao ler dados estruturais, reiniciando ponteiros secundários de segurança.");
+    }
     
-    let indexAtual = -1, txtBase = "", tom = 0, vel = 1, scrollAtivo = false, somenteLetra = false, tocandoTela = false, isBold = false, modoShow = false;
+    let indexAtual = -1, txtBase = "", vel = 1, tomDeslocamento = 0, exibirCifras = true;
+    let scrollAtivo = false, tocandoTela = false, isBold = false, modoShow = false;
     let posicaoSetlistAtual = 0; 
     let lastTap = 0, animationId = null, tempoParadoTimeout = null;
     let posicaoDecimal = 0; 
-    
-    /* MATRIZ DE TRANSPOSIÇÃO PROFISSIONAL INDEPENDENTE */
-    const mapaEscala = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-    const dicionarioCromático = {
-        'C':0, 'C#':1, 'DB':1, 'D':2, 'D#':3, 'EB':3, 'E':4, 'F':5, 'F#':6, 'GB':6, 'G':7, 'G#':8, 'AB':8, 'A':9, 'A#':10, 'BB':10, 'B':11
-    };
 
-    // Captura com precisão a raiz harmônica sem engolir acidentes ou o resto do acorde
-    const regexExtratorAcorde = /([A-G][#b]?)/g;
-    const regexValidadorExato = /^([A-G][#b]?(m|7|M|dim|sus|add|aug|4|6|9|11|13|alt)*(\/[A-G][#b]?)?|\|)$/i;
+    const escalaNotas = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    const mapaBemois = { 'Db': 'C#', 'Eb': 'D#', 'Gb': 'F#', 'Ab': 'G#', 'Bb': 'A#' };
 
     function toggleMenuFontes() {
         const menu = document.getElementById('listaFontes');
@@ -340,7 +329,8 @@
     }
 
     function carregarPreferenciasSalvas() {
-        let salvas = JSON.parse(localStorage.getItem('flash_prefs'));
+        let salvas = null;
+        try { salvas = JSON.parse(localStorage.getItem('flash_prefs')); } catch(e){}
         if (salvas) {
             document.getElementById('cfgBg').value = salvas.bg || 3;
             document.getElementById('cfgText').value = salvas.text || 20;
@@ -381,9 +371,11 @@
         document.getElementById('previewText').style.backgroundColor = corText;
 
         if (deveSalvar) {
-            localStorage.setItem('flash_prefs', JSON.stringify({
-                bg: valBg, text: valText, size: valSize, bold: isBold, family: familiaAtual.replace(/['"]/g, "")
-            }));
+            try {
+                localStorage.setItem('flash_prefs', JSON.stringify({
+                    bg: valBg, text: valText, size: valSize, bold: isBold, family: familiaAtual.replace(/['"]/g, "")
+                }));
+            } catch(e){}
         }
     }
 
@@ -400,122 +392,90 @@
         aplicarEstilos(true);
     }
 
-    /* MOTOR DE TRANSPOSIÇÃO DE ALTA PERFORMANCE (ANTI-DUPLICAÇÃO) */
-    function transporAcordeMestre(acorde, semitons) {
+    function processarNotaUnica(notaOriginal, semitons) {
+        if (semitons === 0) return notaOriginal;
+        let notaLimpa = notaOriginal.replace(/##+/g, '#');
+        if (mapaBemois[notaLimpa]) { notaLimpa = mapaBemois[notaLimpa]; }
+        let idx = escalaNotas.indexOf(notaLimpa);
+        if (idx === -1) return notaOriginal;
+        let novoIdx = (idx + semitons) % 12;
+        if (novoIdx < 0) novoIdx += 12;
+        return escalaNotas[novoIdx];
+    }
+
+    function transporAcordeCompleto(acorde, semitons) {
         if (semitons === 0) return acorde;
-        return acorde.replace(regexExtratorAcorde, (notaOriginal) => {
-            let chave = notaOriginal.toUpperCase().replace('⚡', '');
-            if (dicionarioCromático[chave] === undefined) return notaOriginal;
-            let indexBase = dicionarioCromático[chave];
-            let novoIndex = (indexBase + semitons) % 12;
-            if (novoIndex < 0) novoIndex += 12;
-            return mapaEscala[novoIndex];
-        });
-    }
-
-    function eLinhaDeCifra(linha) {
-        let txt = linha.trim();
-        if (txt === "") return false;
-        if (/^(tom|intro|introdução|solos|solo):/i.test(txt)) return true;
-
-        let tokens = ServerTokenize(linha).filter(t => t.trim() !== "");
-        if (tokens.length === 0) return false;
-        
-        let acertos = 0;
-        tokens.forEach(t => {
-            if (regexValidadorExato.test(t)) acertos++;
-        });
-        
-        if (tokens.length === 1 && (tokens[0].toUpperCase() === "A" || tokens[0].toUpperCase() === "E")) {
-            return false;
+        if (acorde.includes('/')) {
+            let partes = acorde.split('/');
+            return transporAcordeCompleto(partes[0], semitons) + '/' + transporAcordeCompleto(partes[1], semitons);
         }
-        
-        return (acertos / tokens.length) >= 0.4;
+        let fundamental = acorde.match(/^([A-G][#b]?)/);
+        if (!fundamental) return acorde;
+        let notaBase = fundamental[1];
+        let extensoes = acorde.substring(notaBase.length);
+        return processarNotaUnica(notaBase, semitons) + extensoes;
     }
 
-    function processarLinhaCifra(linha) {
-        let partes = ServerTokenize(linha);
-        let resultado = "";
-        
-        partes.forEach(token => {
-            let limpo = token.trim();
-            // Verifica se o bloco isolado casa com a estrutura matemática de um acorde ou marcador
-            if (limpo && (regexValidadorExato.test(limpo) || /^(tom|intro|introdução|solos|solo):/i.test(limpo))) {
-                resultado += transporAcordeMestre(token, tom);
-            } else {
-                resultado += token;
-            }
+    function transporLinhaCompleta(linha, semitons) {
+        if (semitons === 0) return linha;
+        const regexAcordesEstrita = /([A-G](?:[#b])?(?:m|M|maj|min|dim|aug|sus|add|alt|7|6|9|4|11|13)*(?:\/[A-G](?:[#b])?)?)/g;
+        return linha.replace(regexAcordesEstrita, (match) => {
+            return transporAcordeCompleto(match, semitons);
         });
-        return resultado;
+    }
+
+    function ajustarTom(direcao) {
+        let novoTom = tomDeslocamento + direcao;
+        if (novoTom >= -12 && novoTom <= 12) {
+            tomDeslocamento = novoTom;
+            document.getElementById('tomVal').innerText = (tomDeslocamento > 0 ? "+" : "") + tomDeslocamento;
+            renderizarCifra();
+        }
+    }
+
+    function toggleVisibilidadeCifra() {
+        exibirCifras = !exibirCifras;
+        const btn = document.getElementById('btnVisibilidadeCifra');
+        const txt = document.getElementById('statusCifraText');
+        
+        if(exibirCifras) {
+            txt.innerText = "ON";
+            btn.style.background = "#2980b9"; btn.style.borderColor = "#3498db"; btn.style.borderBottomColor = "#1f618d";
+        } else {
+            txt.innerText = "OFF";
+            btn.style.background = "#7f8c8d"; btn.style.borderColor = "#95a5a6"; btn.style.borderBottomColor = "#5d6d7e";
+        }
+        renderizarCifra();
     }
 
     function renderizarCifra() {
         if (indexAtual === -1 || !musicas[indexAtual]) return;
         let lines = txtBase.split('\n');
-        let novoConteudo = [];
-        
+        let htmlFinal = [];
+
         for (let i = 0; i < lines.length; i++) {
-            let linhaAtual = lines[i];
+            let column = lines[i];
+            let linhaTrim = column.trim();
 
-            if (somenteLetra) {
-                if (FranzLimparLinha(linhaAtual).trim() !== "") {
-                    novoConteudo.push(`<span class="linha-letra">${FranzLimparLinha(linhaAtual)}</span>`);
-                }
+            if (linhaTrim === "") {
+                htmlFinal.push('<div class="linha-vazia"></div>');
                 continue;
             }
 
-            if (linhaAtual.trim() === "") {
-                novoConteudo.push(`<div class="linha-vazia"></div>`);
-                continue;
-            }
+            let ehCabecalho = /^(tom|intro|introdução|solo|solos|ponte|refrão|coro):/i.test(linhaTrim);
+            const regexControle = /\b[A-G](?:[#b])?(?:m|M|maj|min|7|6|9|4|11|13|dim|aug|sus|add|alt)*(?:\/[A-G](?:[#b])?)?\b/g;
+            let matches = linhaTrim.match(regexControle) || [];
 
-            if (eLinhaDeCifra(linhaAtual)) {
-                let cifraPronta = processarLinhaCifra(linhaAtual);
-                novoConteudo.push(`<span class="linha-cifra">${cifraPronta}</span>`);
+            if (ehCabecalho || (matches.length > 0 && (matches.join("").length / linhaTrim.replace(/\s/g, "").length) >= 0.35)) {
+                if (!exibirCifras) continue;
+                let linhaTransposta = transporLinhaCompleta(column, tomDeslocamento);
+                htmlFinal.push(`<span class="linha-cifra">${linhaTransposta}</span>`);
             } else {
-                novoConteudo.push(`<span class="linha-letra">${linhaAtual}</span>`);
+                htmlFinal.push(`<span class="linha-letra">${column}</span>`);
             }
         }
-        
-        document.getElementById('viewTexto').innerHTML = novoConteudo.join('');
-        
-        let nomeLimpo = musicas[indexAtual].n.replace('.txt','').toUpperCase();
-        document.getElementById('titulo').innerText = nomeLimpo;
-        document.getElementById('tomVal').innerText = tom > 0 ? "+"+tom : tom;
-        document.getElementById('valModo').innerText = somenteLetra ? "LETRA" : "CIFRA";
-    }
-
-    function ServerTokenize(str) {
-        let arr = [], temp = "", i = 0;
-        while(i < str.length) {
-            if(str[i] === " " || str[i] === "\t") {
-                if(temp !== "") { arr.push(temp); temp = ""; }
-                let spaces = "";
-                while(i < str.length && (str[i] === " " || str[i] === "\t")) {
-                    spaces += str[i]; i++;
-                }
-                arr.push(spaces);
-            } else {
-                temp += str[i]; i++;
-            }
-        }
-        if(temp !== "") arr.push(temp);
-        return arr;
-    }
-
-    function FranzLimparLinha(txt) {
-        if (/^(tom|intro|introdução|solos|solo):/i.test(txt.trim())) return "";
-        if (eLinhaDeCifra(txt)) return "";
-        return txt;
-    }
-
-    /* CONTROLE AJUSTADO ENTRE -12 E +12 CONFORME SOLICITADO */
-    function mudarTom(d) { 
-        let novoTom = tom + d;
-        if (novoTom >= -12 && novoTom <= 12) {
-            tom = novoTom;
-            renderizarCifra(); 
-        }
+        document.getElementById('viewTexto').innerHTML = htmlFinal.join('');
+        document.getElementById('titulo').innerText = musicas[indexAtual].n.replace('.txt','').toUpperCase();
     }
     
     function abrirTela(id) { 
@@ -541,7 +501,7 @@
         historicoIds = historicoIds.filter(x => x !== id);
         historicoIds.unshift(id);
         if(historicoIds.length > 20) historicoIds.pop(); 
-        localStorage.setItem('historico_flash', JSON.stringify(historicoIds));
+        try { localStorage.setItem('historico_flash', JSON.stringify(historicoIds)); } catch(e){}
     }
 
     function carregarMusica(idx) { 
@@ -553,12 +513,11 @@
         registrarNoHistorico(indexAtual); 
         
         txtBase = musicas[indexAtual].t; 
-        tom = 0; scrollAtivo = false; 
+        scrollAtivo = false; tomDeslocamento = 0; 
+        document.getElementById('tomVal').innerText = "0";
         document.getElementById('btnScroll').style.background = "#27ae60";
         
-        renderizarCifra(); 
-        abrirTela('telaCifra'); 
-        
+        renderizarCifra(); abrirTela('telaCifra'); 
         document.getElementById('telaCifra').scrollTo(0,0); 
         posicaoDecimal = 0; 
     }
@@ -593,13 +552,11 @@
     }
 
     function ajustarVel(d) { 
-        vel = vel + d;
-        if(vel < 1) vel = 1; if(vel > 100) vel = 100;
+        vel = vel + d; if(vel < 1) vel = 1; if(vel > 100) vel = 100;
         document.getElementById('velVal').innerText = vel;
     }
 
     const containerCifra = document.getElementById('telaCifra');
-    
     containerCifra.addEventListener('touchstart', function(e) {
         tocandoTela = true; pararMotor(); 
         if(tempoParadoTimeout) clearTimeout(tempoParadoTimeout);
@@ -639,7 +596,10 @@
         });
     }
 
-    function addSet(id) { setlistIds.push(parseInt(id)); localStorage.setItem('setlist_flash', JSON.stringify(setlistIds)); }
+    function addSet(id) { 
+        setlistIds.push(parseInt(id)); 
+        try { localStorage.setItem('setlist_flash', JSON.stringify(setlistIds)); } catch(e){}
+    }
     
     function renderizarSetlist() {
         const l = document.getElementById('listaSetlist'); l.innerHTML = "";
@@ -647,19 +607,13 @@
         setlistIds.forEach((id, index) => {
             if(musicas[id]) {
                 let item = document.createElement('div'); item.className = 'item-lista-geral';
-                let divOrdem = document.createElement('div'); divOrdem.className = 'controles-ordem';
-                
-                let btnUp = document.createElement('button'); btnUp.className = 'btn-ordem'; btnUp.innerText = '↑'; btnUp.addEventListener('click', function() { mover(index, -1); });
-                let btnDown = document.createElement('button'); btnDown.className = 'btn-ordem'; btnDown.innerText = '↓'; btnDown.addEventListener('click', function() { mover(index, 1); });
-                divOrdem.appendChild(btnUp); divOrdem.appendChild(btnDown);
-                
-                let spanNome = document.createElement('span'); spanNome.style.cssText = "flex:1; display:block; padding:10px 0; font-weight:bold; cursor:pointer;"; spanNome.innerText = musicas[id].n.replace('.txt','');
+                let spanNome = document.createElement('span'); spanNome.style.cssText = "flex:1; display:block; padding:12px 5px; font-weight:bold; cursor:pointer;"; spanNome.innerText = musicas[id].n.replace('.txt','');
                 spanNome.addEventListener('click', function() { modoShow = true; posicaoSetlistAtual = index; carregarMusica(id); });
                 
                 let btnRem = document.createElement('button'); btnRem.style.cssText = "background:none; border:none; color:#ff4757; font-weight:bold; font-size:18px; padding:10px; cursor:pointer;"; btnRem.innerText = '✕';
                 btnRem.addEventListener('click', function() { remSet(index); });
                 
-                item.appendChild(divOrdem); item.appendChild(spanNome); item.appendChild(btnRem); l.appendChild(item);
+                item.appendChild(spanNome); item.appendChild(btnRem); l.appendChild(item);
             }
         });
     }
@@ -681,20 +635,35 @@
         });
     }
 
-    function remHistorico(index) { historicoIds.splice(index, 1); localStorage.setItem('historico_flash', JSON.stringify(historicoIds)); renderizarHistorico(); }
-    function mover(from, d) { let to = from + d; if(to >= 0 && to < setlistIds.length) { [setlistIds[from], setlistIds[to]] = [setlistIds[to], setlistIds[from]]; renderizarSetlist(); localStorage.setItem('setlist_flash', JSON.stringify(setlistIds)); } }
-    function remSet(i) { setlistIds.splice(i, 1); renderizarSetlist(); localStorage.setItem('setlist_flash', JSON.stringify(setlistIds)); }
+    function remHistorico(index) { 
+        historicoIds.splice(index, 1); 
+        try { localStorage.setItem('historico_flash', JSON.stringify(historicoIds)); } catch(e){}
+        renderizarHistorico(); 
+    }
+    function remSet(i) { 
+        setlistIds.splice(i, 1); renderizarSetlist(); 
+        try { localStorage.setItem('setlist_flash', JSON.stringify(setlistIds)); } catch(e){}
+    }
     
+    // MOTOR DE PASTAS REMODELADO E TRATADO COM CODIFICAÇÃO LATIN/ISO PARA ACENTUAÇÃO PERFEITA
     function importar(input) { 
-        const files = Array.from(input.files); if(files.length === 0) return;
-        musicas = []; 
-        files.forEach((f) => { 
+        const arquivosBrutos = Array.from(input.files);
+        const txtFiles = arquivosBrutos.filter(f => f.name.toLowerCase().endsWith('.txt'));
+        if(txtFiles.length === 0) { alert("Nenhum arquivo de texto (.txt) foi encontrado nesta pasta!"); return; }
+
+        let processados = 0; let novasMusicas = []; 
+        txtFiles.forEach((f) => { 
             const r = new FileReader(); 
             r.onload = e => { 
-                musicas.push({n:f.name, t:e.target.result}); 
-                if(musicas.length === files.length) { 
+                novasMusicas.push({ n: f.name, t: e.target.result }); processados++;
+                if(processados === txtFiles.length) { 
+                    let mapaExistente = {};
+                    musicas.forEach(m => mapaExistente[m.n] = m.t);
+                    novasMusicas.forEach(m => mapaExistente[m.n] = m.t);
+                    musicas = Object.keys(mapaExistente).map(nome => { return { n: nome, t: mapaExistente[nome] }; });
                     musicas.sort((a,b) => a.n.localeCompare(b.n)); 
-                    localStorage.setItem('cifras_v3', JSON.stringify(musicas)); 
+                    try { localStorage.setItem('cifras_v3', JSON.stringify(musicas)); } catch(e){}
+                    alert(`${txtFiles.length} cifras importadas com sucesso!`);
                     location.reload(); 
                 }
             }; 
@@ -702,9 +671,14 @@
         }); 
     }
     
-    function toggleModo() { somenteLetra = !somenteLetra; renderizarCifra(); }
     function abrirEditor() { if (indexAtual !== -1 && musicas[indexAtual]) { pararMotor(); document.getElementById('areaEdicao').value = txtBase; document.getElementById('telaEditor').style.display = 'flex'; } }
-    function salvarEdicao() { if (indexAtual !== -1 && musicas[indexAtual]) { txtBase = document.getElementById('areaEdicao').value; musicas[indexAtual].t = txtBase; localStorage.setItem('cifras_v3', JSON.stringify(musicas)); renderizarCifra(); document.getElementById('telaEditor').style.display = 'none'; } }
+    function salvarEdicao() { 
+        if (indexAtual !== -1 && musicas[indexAtual]) { 
+            txtBase = document.getElementById('areaEdicao').value; musicas[indexAtual].t = txtBase; 
+            try { localStorage.setItem('cifras_v3', JSON.stringify(musicas)); } catch(e){}
+            renderizarCifra(); document.getElementById('telaEditor').style.display = 'none'; 
+        } 
+    }
     function iniciarShow() { if(setlistIds.length > 0) { modoShow = true; posicaoSetlistAtual = 0; carregarMusica(setlistIds[0]); } }
 
     function navMusica(d) { 
@@ -726,7 +700,6 @@
             if (musicas[p]) carregarMusica(p); 
         }
     }
-    
     window.onload = function() { carregarPreferenciasSalvas(); };
 </script>
 </body>
