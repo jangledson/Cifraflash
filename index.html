@@ -68,6 +68,7 @@
         .bloco-ajuste button { flex: 1; border: none; background: none; color: white; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .bloco-ajuste .info { flex: 1.1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 9px; font-weight: bold; color: var(--ui-accent); background: rgba(0,0,0,0.3); }
         
+        /* TEXTO DA CIFRA - PRESERVA FORMATAÇÃO EXATA */
         #viewTexto { 
             white-space: pre-wrap; 
             font-family: var(--current-family); 
@@ -189,6 +190,7 @@
             <button id="btnScroll" class="btn-play-header" onclick="toggleScroll()"><span id="txtBtnPlay" class="text-verde">▶ PLAY</span></button>
         </div>
     </div>
+    <!-- O texto será inserido aqui via JavaScript sem modificar o formato original -->
     <div id="viewTexto" contenteditable="false"></div>
     <div id="footerCifra" class="panel-right-control">
         <div id="blocoNavegacaoSetlist" style="display: none; flex-direction: column; gap: 8px; width: 100%;">
@@ -914,7 +916,7 @@
         input.value = "";
     }
 
-    // ==================== FUNÇÕES DA CIFRA (COM TRANSPOSIÇÃO) ====================
+    // ==================== FUNÇÕES DA CIFRA (COM TRANSPOSIÇÃO E FORMATAÇÃO ORIGINAL) ====================
     function processarNotaUnica(notaOriginal, semitons) {
         if (semitons === 0) return notaOriginal;
         let notaLimpa = notaOriginal.replace(/##+/g, '#');
@@ -1000,30 +1002,34 @@
         if(animationId) { cancelAnimationFrame(animationId); animationId = null; }
     }
 
-    // Função que exibe a cifra com transposição de tom preservando a formatação
+    // Função que exibe a cifra EXATAMENTE como no arquivo original
     function renderizarCifra() {
         if (indexAtual === -1 || !musicas[indexAtual]) return;
         
         let textoOriginal = txtBase;
-        let linhas = textoOriginal.split('\n');
-        let htmlFinal = [];
         
-        // Se a opção de exibir cifras estiver desligada, mostra só as letras (remove acordes)
+        // Se a opção de exibir cifras estiver desligada, remove os acordes
         if (!exibirCifras) {
+            // Remove acordes de cada linha
+            let linhas = textoOriginal.split('\n');
+            let linhasSemAcordes = [];
             for (let linha of linhas) {
-                // Remove acordes da linha (mas preserva letras)
-                let linhaSemAcordes = linha.replace(/\b[A-G](?:[#b])?(?:m|M|maj|min|7|6|9|4|11|13|dim|aug|sus|add|alt)*(?:\/[A-G](?:[#b])?)?\b/g, '');
-                htmlFinal.push(linhaSemAcordes);
+                let linhaLimpa = linha.replace(/\b[A-G](?:[#b])?(?:m|M|maj|min|7|6|9|4|11|13|dim|aug|sus|add|alt)*(?:\/[A-G](?:[#b])?)?\b/g, '');
+                linhasSemAcordes.push(linhaLimpa);
             }
-            document.getElementById('viewTexto').innerHTML = htmlFinal.join('<br>');
+            textoOriginal = linhasSemAcordes.join('\n');
         } else {
-            // Com transposição de tom
+            // Aplica transposição de tom
+            let linhas = textoOriginal.split('\n');
+            let linhasTranspostas = [];
             for (let linha of linhas) {
-                let linhaTransposta = transporLinhaCompleta(linha, tomDeslocamento);
-                htmlFinal.push(linhaTransposta);
+                linhasTranspostas.push(transporLinhaCompleta(linha, tomDeslocamento));
             }
-            document.getElementById('viewTexto').innerHTML = htmlFinal.join('<br>');
+            textoOriginal = linhasTranspostas.join('\n');
         }
+        
+        // Insere o texto diretamente - o CSS white-space: pre-wrap cuida da formatação
+        document.getElementById('viewTexto').innerText = textoOriginal;
         
         // Aplica as cores e estilos
         let corTexto = getPaletaColor(document.getElementById('cfgText').value);
