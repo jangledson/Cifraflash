@@ -113,7 +113,7 @@
 
         .editor-fullscreen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff !important; color: #000000 !important; z-index: 99999; padding: 15px; flex-direction: column; }
         .editor-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 2px solid #ccc; margin-bottom: 10px; }
-        .editor-textarea { flex: 1; width: 100%; background: #ffffff !important; color: #000000 !important; border: none; padding: 10px; font-family: monospace; font-size: 19px; font-weight: bold; outline: none; resize: none; line-height: 1.45; user-select: text !important; -webkit-user-select: text !important; }
+        .editor-textarea { flex: 1; width: 100%; background: #ffffff !important; color: #000000 !important; border: none; padding: 10px; font-family: monospace; font-size: 19px; font-weight: bold; outline: none; resize: none; line-height: 1.45; user-select: text !important; -webkit-user-select: text !important; white-space: pre-wrap; }
         .btn-editor-salvar { background: #2ecc71; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
         .btn-editor-cancelar { background: #e74c3c; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
 
@@ -129,7 +129,6 @@
         .text-verde { color: #2ecc71 !important; }
         .text-vermelho { color: #e74c3c !important; }
         .text-ciano { color: #00ffff !important; }
-        .linha-cifra, .linha-letra { color: var(--dynamic-text); display: block; }
         
         .fullscreen-mode #headerCifra,
         .fullscreen-mode .panel-right-control {
@@ -273,7 +272,7 @@
 
 <div id="telaEditor" class="editor-fullscreen">
     <div class="editor-header">
-        <button class="btn-editor-cancelar" onclick="pararMotor(); document.getElementById('telaEditor').style.display='none'">CANCELAR</button>
+        <button class="btn-editor-cancelar" onclick="fecharEditor()">CANCELAR</button>
         <h3 style="color:#000;">MODO EDIÇÃO</h3>
         <button class="btn-editor-salvar" onclick="salvarEdicao()">SALVAR</button>
     </div>
@@ -289,8 +288,9 @@
     let posicaoSetlistAtual = 0;
     let animationId = null, tempoParadoTimeout = null;
     let posicaoDecimal = 0;
-    let lastTapTime = 0;
+    let lastTap = 0;
     let fullscreenActive = false;
+    let timeoutBusca = null;
 
     const escalaNotas = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
     const mapaBemois = { 'Db': 'C#', 'Eb': 'D#', 'Gb': 'F#', 'Ab': 'G#', 'Bb': 'A#' };
@@ -311,12 +311,13 @@
         const telaCifra = document.getElementById('telaCifra');
         
         if (!fullscreenActive) {
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            } else if (document.documentElement.webkitRequestFullscreen) {
-                document.documentElement.webkitRequestFullscreen();
-            } else if (document.documentElement.msRequestFullscreen) {
-                document.documentElement.msRequestFullscreen();
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
             }
             
             telaCifra.classList.add('fullscreen-mode');
@@ -343,6 +344,11 @@
         }
     });
 
+    function fecharEditor() {
+        pararMotor();
+        document.getElementById('telaEditor').style.display = 'none';
+    }
+
     // ==================== FUNÇÕES DE UI ====================
     function toggleMenuHome() { document.getElementById('menuFlutuante').classList.toggle('aberto'); }
     function fecharMenuHome() { document.getElementById('menuFlutuante').classList.remove('aberto'); }
@@ -359,6 +365,7 @@
         if(id !== 'telaCifra' && fullscreenActive) {
             const telaCifraEl = document.getElementById('telaCifra');
             telaCifraEl.classList.remove('fullscreen-mode');
+            if (document.exitFullscreen) document.exitFullscreen();
             fullscreenActive = false;
         }
     }
@@ -374,6 +381,7 @@
         
         const telaCifraEl = document.getElementById('telaCifra');
         telaCifraEl.classList.remove('fullscreen-mode');
+        if (document.exitFullscreen) document.exitFullscreen();
         fullscreenActive = false;
     }
 
@@ -439,20 +447,17 @@
         });
     }
 
-    // ==================== FUNÇÃO DE EXCLUIR PASTA CORRIGIDA ====================
     async function excluirPastaEConteudo(idPasta, nomePasta) {
         if(!confirm(`Tem certeza que deseja deletar a pasta "${nomePasta}" e TODAS as suas cifras?\n\nEsta ação não pode ser desfeita!`)) return;
         
         mostrarCarregamento(`Removendo pasta "${nomePasta}"...`);
         
         try {
-            // 1. Remover a pasta do registro de pastas (se tiver ID)
             if(idPasta && !isNaN(idPasta)) {
                 const txP = db.transaction("pastas", "readwrite");
                 txP.objectStore("pastas").delete(Number(idPasta));
             }
             
-            // 2. Remover todas as músicas que pertencem a esta pasta
             const txM = db.transaction("cifras", "readwrite");
             const storeM = txM.objectStore("cifras");
             
@@ -546,7 +551,6 @@
             btnX.className = 'btn-del-pasta-x';
             btnX.innerText = "X";
             let pastaEncontrada = pastasLista.find(p => p.nome === nome);
-            // CORREÇÃO: Usar closure para capturar os valores corretamente
             const nomePasta = nome;
             const idPasta = pastaEncontrada?.id;
             btnX.onclick = function() {
@@ -619,54 +623,71 @@
     }
 
     function executarBuscaHome(valorInput) {
-        const container = document.getElementById('containerResultadosHome');
-        const btnLimpar = document.getElementById('btnLimparBuscaHome');
-        if(!valorInput || valorInput.trim() === "") {
-            container.innerHTML = "";
-            container.style.display = "none";
-            btnLimpar.style.display = "none";
-            return;
-        }
-        btnLimpar.style.display = "block";
-        container.innerHTML = "";
-        let buscaLimpa = normalizarTextoParaBusca(valorInput);
-        let filtradas = musicas.filter(m => {
-            let nomeMusicaLimpo = normalizarTextoParaBusca(m.n);
-            let pastaLimpa = m.origem ? normalizarTextoParaBusca(m.origem) : "";
-            return nomeMusicaLimpo.includes(buscaLimpa) || pastaLimpa.includes(buscaLimpa);
-        });
+        if (timeoutBusca) clearTimeout(timeoutBusca);
         
-        if(filtradas.length === 0) {
-            container.innerHTML = `<p style='text-align:center; padding:15px; color:#aaa; font-size:13px;'>Nenhuma música encontrada.</p>`;
-            container.style.display = "block";
-            return;
-        }
+        timeoutBusca = setTimeout(() => {
+            const container = document.getElementById('containerResultadosHome');
+            const btnLimpar = document.getElementById('btnLimparBuscaHome');
+            
+            if(!valorInput || valorInput.trim() === "") {
+                container.innerHTML = "";
+                container.style.display = "none";
+                btnLimpar.style.display = "none";
+                return;
+            }
+            
+            btnLimpar.style.display = "block";
+            container.innerHTML = "";
+            let buscaLimpa = normalizarTextoParaBusca(valorInput);
+            
+            let filtradas = musicas.filter(m => {
+                let nomeMusicaLimpo = normalizarTextoParaBusca(m.n);
+                let pastaLimpa = m.origem ? normalizarTextoParaBusca(m.origem) : "";
+                return nomeMusicaLimpo.includes(buscaLimpa) || pastaLimpa.includes(buscaLimpa);
+            });
+            
+            if(filtradas.length === 0) {
+                container.innerHTML = `<p style='text-align:center; padding:15px; color:#aaa; font-size:13px;'>Nenhuma música encontrada.</p>`;
+                container.style.display = "block";
+                return;
+            }
 
-        filtradas.forEach((m) => {
-            let card = document.createElement('div');
-            card.className = 'card-musica';
-            let btn = document.createElement('button');
-            btn.className = 'btn-item-musica';
-            btn.innerText = m.n.includes(" - ") ? m.n.split(" - ").pop() : m.n;
-            let musicId = musicas.findIndex(x => x.n === m.n);
-            btn.onclick = () => { limparEFecharBuscaHome(); modoShow = false; carregarMusica(musicId); };
-            let tag = document.createElement('span');
-            tag.className = 'tag-artista-pasta';
-            tag.innerText = m.origem || "Geral";
-            let btnAdd = document.createElement('button');
-            btnAdd.innerText = "+";
-            btnAdd.style.cssText = "background:var(--ui-accent); border:none; border-radius:8px; color:#071724; font-weight:bold; font-size:18px; width:36px; height:36px; cursor:pointer; margin-left:10px;";
-            btnAdd.onclick = () => { 
-                if(!setlistIds.includes(musicId)) setlistIds.push(musicId);
-                localStorage.setItem('setlist_flash', JSON.stringify(setlistIds));
-                alert("Adicionado à setlist!");
-            };
-            card.appendChild(btn); 
-            card.appendChild(tag);
-            card.appendChild(btnAdd);
-            container.appendChild(card);
-        });
-        container.style.display = "block";
+            let resultadosExibidos = filtradas.slice(0, 50);
+            
+            resultadosExibidos.forEach((m) => {
+                let card = document.createElement('div');
+                card.className = 'card-musica';
+                let btn = document.createElement('button');
+                btn.className = 'btn-item-musica';
+                btn.innerText = m.n.includes(" - ") ? m.n.split(" - ").pop() : m.n;
+                let musicId = musicas.findIndex(x => x.n === m.n);
+                btn.onclick = () => { limparEFecharBuscaHome(); modoShow = false; carregarMusica(musicId); };
+                let tag = document.createElement('span');
+                tag.className = 'tag-artista-pasta';
+                tag.innerText = m.origem || "Geral";
+                let btnAdd = document.createElement('button');
+                btnAdd.innerText = "+";
+                btnAdd.style.cssText = "background:var(--ui-accent); border:none; border-radius:8px; color:#071724; font-weight:bold; font-size:18px; width:36px; height:36px; cursor:pointer; margin-left:10px;";
+                btnAdd.onclick = () => { 
+                    if(!setlistIds.includes(musicId)) setlistIds.push(musicId);
+                    localStorage.setItem('setlist_flash', JSON.stringify(setlistIds));
+                    alert("Adicionado à setlist!");
+                };
+                card.appendChild(btn); 
+                card.appendChild(tag);
+                card.appendChild(btnAdd);
+                container.appendChild(card);
+            });
+            
+            if (filtradas.length > 50) {
+                let aviso = document.createElement('p');
+                aviso.style.cssText = "text-align:center; padding:10px; color:#aaa; font-size:12px;";
+                aviso.innerText = `+ ${filtradas.length - 50} resultados. Refine sua busca.`;
+                container.appendChild(aviso);
+            }
+            
+            container.style.display = "block";
+        }, 200);
     }
 
     function limparEFecharBuscaHome() {
@@ -675,6 +696,7 @@
         container.innerHTML = "";
         container.style.display = "none";
         document.getElementById('btnLimparBuscaHome').style.display = "none";
+        if (timeoutBusca) clearTimeout(timeoutBusca);
     }
 
     // ==================== IMPORTAÇÕES ====================
@@ -892,7 +914,7 @@
         input.value = "";
     }
 
-    // ==================== FUNÇÕES DA CIFRA ====================
+    // ==================== FUNÇÕES DA CIFRA (COM TRANSPOSIÇÃO) ====================
     function processarNotaUnica(notaOriginal, semitons) {
         if (semitons === 0) return notaOriginal;
         let notaLimpa = notaOriginal.replace(/##+/g, '#');
@@ -978,25 +1000,38 @@
         if(animationId) { cancelAnimationFrame(animationId); animationId = null; }
     }
 
+    // Função que exibe a cifra com transposição de tom preservando a formatação
     function renderizarCifra() {
         if (indexAtual === -1 || !musicas[indexAtual]) return;
-        let lines = txtBase.split('\n');
+        
+        let textoOriginal = txtBase;
+        let linhas = textoOriginal.split('\n');
         let htmlFinal = [];
-        for (let line of lines) {
-            if (line.trim() === "") { htmlFinal.push('<div class="linha-vazia"></div>'); continue; }
-            let ehCabecalho = /^(tom|intro|refrão|ponte|solo|coro):/i.test(line.trim());
-            const regexAcordes = /\b[A-G](?:[#b])?(?:m|M|maj|min|7|6|9|4|11|13|dim|aug|sus|add|alt)*(?:\/[A-G](?:[#b])?)?\b/g;
-            let matches = line.match(regexAcordes) || [];
-            if (ehCabecalho || (matches.length > 0 && (matches.join("").length / line.replace(/\s/g, "").length) >= 0.35)) {
-                if (!exibirCifras) continue;
-                htmlFinal.push(`<span class="linha-cifra">${transporLinhaCompleta(line, tomDeslocamento)}</span>`);
-            } else {
-                htmlFinal.push(`<span class="linha-letra">${line}</span>`);
+        
+        // Se a opção de exibir cifras estiver desligada, mostra só as letras (remove acordes)
+        if (!exibirCifras) {
+            for (let linha of linhas) {
+                // Remove acordes da linha (mas preserva letras)
+                let linhaSemAcordes = linha.replace(/\b[A-G](?:[#b])?(?:m|M|maj|min|7|6|9|4|11|13|dim|aug|sus|add|alt)*(?:\/[A-G](?:[#b])?)?\b/g, '');
+                htmlFinal.push(linhaSemAcordes);
             }
+            document.getElementById('viewTexto').innerHTML = htmlFinal.join('<br>');
+        } else {
+            // Com transposição de tom
+            for (let linha of linhas) {
+                let linhaTransposta = transporLinhaCompleta(linha, tomDeslocamento);
+                htmlFinal.push(linhaTransposta);
+            }
+            document.getElementById('viewTexto').innerHTML = htmlFinal.join('<br>');
         }
-        document.getElementById('viewTexto').innerHTML = htmlFinal.join('');
+        
+        // Aplica as cores e estilos
         let corTexto = getPaletaColor(document.getElementById('cfgText').value);
         document.getElementById('viewTexto').style.color = corTexto;
+        document.getElementById('viewTexto').style.whiteSpace = 'pre-wrap';
+        document.getElementById('viewTexto').style.fontFamily = "var(--current-family)";
+        document.getElementById('viewTexto').style.fontSize = "var(--font-size)";
+        document.getElementById('viewTexto').style.fontWeight = "var(--font-weight)";
         document.getElementById('titulo').innerText = musicas[indexAtual].n.toUpperCase();
         
         const blocoNav = document.getElementById('blocoNavegacaoSetlist');
@@ -1061,22 +1096,29 @@
         }
     }
 
+    // ==================== EDITOR ====================
     function abrirEditor() { 
         if (indexAtual !== -1 && musicas[indexAtual]) { 
             pararMotor(); 
             document.getElementById('areaEdicao').value = txtBase; 
             document.getElementById('telaEditor').style.display = 'flex'; 
-        } 
+        } else {
+            alert("Nenhuma música carregada para editar.");
+        }
     }
     
     async function salvarEdicao() { 
         if (indexAtual !== -1 && musicas[indexAtual]) { 
-            txtBase = document.getElementById('areaEdicao').value; 
+            const novoTexto = document.getElementById('areaEdicao').value;
+            txtBase = novoTexto; 
             musicas[indexAtual].t = txtBase; 
             await salvarNoBanco(musicas[indexAtual].n, txtBase, musicas[indexAtual].origem || "Solto");
-            renderizarCifra(); 
-            document.getElementById('telaEditor').style.display = 'none'; 
-        } 
+            renderizarCifra();
+            document.getElementById('telaEditor').style.display = 'none';
+            alert("✅ Alterações salvas com sucesso!");
+        } else {
+            alert("Erro ao salvar. Tente novamente.");
+        }
     }
 
     // ==================== ESTILOS ====================
@@ -1154,24 +1196,44 @@
     }
 
     // ==================== EVENTOS TOUCH ====================
-    let lastTap = 0;
+    function isTouchingViewTexto(event) {
+        const viewTexto = document.getElementById('viewTexto');
+        const header = document.getElementById('headerCifra');
+        const footer = document.getElementById('footerCifra');
+        
+        let target = event.target;
+        
+        if (viewTexto && viewTexto.contains(target)) {
+            return true;
+        }
+        if (header && header.contains(target)) {
+            return false;
+        }
+        if (footer && footer.contains(target)) {
+            return false;
+        }
+        return true;
+    }
+
     const containerCifra2 = document.getElementById('telaCifra');
     if(containerCifra2) {
         containerCifra2.addEventListener('touchstart', function(e) {
             tocandoTela = true; pararMotor();
             let now = Date.now();
             
-            if(now - lastTap < 300) {
+            const toqueNoTexto = isTouchingViewTexto(e);
+            
+            if(now - lastTap < 300 && toqueNoTexto) {
                 toggleRealFullscreen();
+            } else if (toqueNoTexto) {
+                setTimeout(() => {
+                    if(!fullscreenActive) {
+                        document.getElementById('headerCifra').classList.toggle('ui-hidden');
+                        document.getElementById('footerCifra').classList.toggle('footer-hidden');
+                    }
+                }, 100);
             }
             lastTap = now;
-            
-            setTimeout(() => {
-                if(!fullscreenActive) {
-                    document.getElementById('headerCifra').classList.toggle('ui-hidden');
-                    document.getElementById('footerCifra').classList.toggle('footer-hidden');
-                }
-            }, 100);
         }, {passive: true});
 
         containerCifra2.addEventListener('touchend', function(e) {
