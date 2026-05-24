@@ -3,238 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#0b1a2a">
+    <meta name="theme-color" content="#071724">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <title>Cifra Flash Pro v104.9</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Montserrat:wght@700&family=Open+Sans&family=Playfair+Display&family=Bebas+Neue&family=Courier+Prime&family=Dancing+Script&family=Oswald&family=Ubuntu&family=Arvo&display=swap" rel="stylesheet">
+    <title>Cifra Flash</title>
     
-    <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
-    <script>
-        if (typeof JSZip === 'undefined') {
-            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"><\/script>');
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Montserrat:wght@900&family=Open+Sans&family=Playfair+Display&family=Bebas+Neue&family=Courier+Prime&family=Dancing+Script&family=Oswald&family=Ubuntu&family=Arvo&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
         :root { 
             --ui-accent: #00ffff; 
-            --ui-bg-dark: #0b1a2a;
-            --dynamic-bg: #0b1a2a; 
+            --ui-bg-dark: #071724;
+            --dynamic-bg: #071724; 
             --dynamic-text: #ffffff; 
-            --font-size: 24px; 
+            --font-size: 18px; 
             --font-weight: 400;
             --current-family: 'Segoe UI', sans-serif;
-            
             --btn-header-bg: #2c3e50;
             --btn-header-border: #456173;
             --btn-header-bottom: #1a2530;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
         
-        body, html, button, input, h1, h2, .label-cfg, .preview-font-name { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-        }
-        body, html { height: 100%; background-color: var(--ui-bg-dark); color: white; overflow: hidden; touch-action: pan-y; }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+        body, html { width: 100%; height: 100%; background-color: var(--ui-bg-dark); color: white; overflow: hidden; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
 
-        .home-container { 
-            position: relative; 
-            width: 100%; 
-            height: 100%; 
-            display: flex; 
-            flex-direction: column; 
-            z-index: 10; 
-            padding: 30px 20px; 
-            background: var(--ui-bg-dark);
-            overflow-y: auto;
-        }
+        .home-container { position: relative; width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; z-index: 10; padding: 15px; background: var(--ui-bg-dark); overflow-y: auto; }
+        .bloco-topo { width: 100%; max-width: 500px; margin-top: 15vh; display: flex; flex-direction: column; align-items: center; }
+        .logo-central h1 { color: var(--ui-accent) !important; letter-spacing: 3px; text-shadow: 0 0 15px rgba(0, 255, 255, 0.6); font-size: calc(2.6rem + 1vw); font-weight: 900; text-align: center; }
 
-        .logo-central {
-            margin-top: 40px;
-            margin-bottom: 30px;
-            width: 100%;
-            text-align: center;
-        }
-        .logo-central h1 { 
-            color: var(--ui-accent) !important; 
-            letter-spacing: 4px; 
-            text-shadow: 0 0 20px var(--ui-accent); 
-            font-size: 3.5rem; 
-            font-weight: 900; 
-        }
+        .area-busca-container { position: relative; width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 10px; z-index: 500; margin-top: 30px; }
+        .janela-resultados-home { display: none; width: 100%; position: absolute; top: 100%; margin-top: 5px; max-height: 45vh; background: rgba(7, 23, 36, 0.98); border: 2px solid var(--ui-accent); border-radius: 12px; padding: 10px; overflow-y: auto; -webkit-overflow-scrolling: touch; box-shadow: 0 5px 25px rgba(0, 255, 255, 0.25); z-index: 600; }
+        .barra-busca-inferior { width: 100%; background: rgba(22, 36, 49, 0.95); border: 2px solid var(--ui-accent); border-radius: 12px; padding: 10px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2); }
+        .input-busca { flex: 1; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 12px; color: white; font-size: 15px; outline: none; user-select: text; -webkit-user-select: text; }
+        .btn-busca-limpar { background: #ff4757; color: white; border: none; border-radius: 8px; padding: 12px 15px; font-weight: bold; font-size: 14px; cursor: pointer; display: none; }
+
+        .card-musica { background: rgba(255,255,255,0.06); padding: 14px; border-radius: 8px; margin-bottom: 8px; border-left: 5px solid var(--ui-accent); display: flex; align-items: center; justify-content: space-between; text-transform: uppercase; }
+        .btn-item-musica { background: none; border: none; color: white; text-align: left; font-size: 14px; font-weight: bold; flex: 1; text-transform: uppercase; cursor: pointer; }
+        .tag-artista-pasta { font-size: 11px; background: rgba(0, 255, 255, 0.15); color: var(--ui-accent); padding: 4px 8px; border-radius: 4px; font-weight: bold; margin-left: 10px; }
+
+        .box-pastas-config { background: rgba(0,0,0,0.3); border: 2px solid var(--ui-accent); border-radius: 10px; padding: 12px; margin-top: 5px; display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; }
+        .card-pasta-config { background: rgba(255,255,255,0.06); padding: 12px; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(255,255,255,0.1); }
+        .nome-pasta-cfg { font-weight: bold; color: #fff; font-size: 14px; text-transform: uppercase; }
+        .qtd-pasta-cfg { font-size: 11px; color: #f1c40f; margin-left: 5px; }
+        .btn-del-pasta-x { background: #ff4757; color: white; border: none; font-size: 14px; font-weight: bold; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+        .menu-flutuante-container { position: fixed; right: 25px; bottom: 30px; display: flex; flex-direction: column; align-items: center; z-index: 400; }
+        .btn-trigger-menu { width: 60px; height: 60px; border-radius: 50%; background: var(--ui-accent); color: #071724; font-size: 32px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0,255,255,0.4); border: none; cursor: pointer; transition: transform 0.25s ease; }
+        .menu-flutuante-container.aberto .btn-trigger-menu { transform: rotate(135deg); background: #ff4757; color: white; }
+        .btn-float-item { width: 50px; height: 50px; border-radius: 50%; background: #ffffff; color: #333333; font-size: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.25); border: 1px solid #e6e6e6; cursor: pointer; opacity: 0; transform: scale(0) translateY(25px); transition: transform 0.2s ease, opacity 0.2s ease; margin-bottom: 10px; pointer-events: none; }
+        .menu-flutuante-container.aberto .btn-float-item { opacity: 1; transform: scale(1) translateY(0); pointer-events: auto; }
         
-        .busca-input { 
-            width: 85%; 
-            max-width: 480px;
-            margin: 0 auto 25px auto;
-            padding: 18px 20px; 
-            border-radius: 14px; 
-            border: 3px solid var(--ui-accent) !important; 
-            background: rgba(0,255,255,0.15); 
-            color: white; 
-            font-size: 22px; 
-            font-weight: bold;
-            text-align: center; 
-            outline: none; 
-            display: block;
-            user-select: text !important; 
-            -webkit-user-select: text !important; 
-            flex-shrink: 0;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-        }
+        .tela-full { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; background: var(--dynamic-bg); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        #telaCifra { background: var(--dynamic-bg) !important; }
+        #telaConfig, #telaSetlist, #telaHistorico { background: var(--ui-bg-dark) !important; }
         
-        #listaResultados { 
-            width: 100%; 
-            overflow-y: auto; 
-            flex: 1; 
-            display: none; 
-            padding-bottom: 100px; 
-        }
-        .card-musica { background: rgba(255,255,255,0.08); padding: 16px 20px; border-radius: 14px; margin-bottom: 14px; border-left: 6px solid var(--ui-accent); display: flex; align-items: center; justify-content: space-between; text-transform: uppercase; }
-        .btn-item-musica { background: none; border: none; color: white; text-align: left; font-size: 20px; font-weight: bold; flex: 1; padding: 12px 0; text-transform: uppercase; cursor: pointer; }
-        .tag-origem { font-size: 12px; color: var(--ui-accent); background: rgba(0,255,255,0.15); padding: 5px 10px; border-radius: 6px; margin-right: 12px; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
-
-        .menu-container {
-            position: fixed;
-            right: 25px;
-            bottom: 25px;
-            z-index: 12000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            pointer-events: auto;
-        }
-        
-        .btn-sub-menu {
-            width: 58px !important;
-            height: 58px !important;
-            border-radius: 50% !important;
-            background: #ffffff !important;
-            color: #0b1a2a !important;
-            font-size: 26px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.5) !important;
-            border: none !important;
-            cursor: pointer !important;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.2s ease;
-            pointer-events: none;
-            opacity: 0;
-            transform: translateY(20px) scale(0.8);
-        }
-
-        .btn-menu-principal {
-            width: 70px !important;
-            height: 70px !important;
-            border-radius: 50% !important;
-            background: var(--ui-accent) !important;
-            color: #0b1a2a !important;
-            font-size: 36px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.6) !important;
-            border: none !important;
-            cursor: pointer !important;
-            transition: transform 0.3s ease;
-            z-index: 12001;
-        }
-
-        .menu-container.aberto .btn-sub-menu {
-            pointer-events: auto;
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-        .menu-container.aberto .btn-menu-principal {
-            transform: rotate(135deg);
-            background: #ff4757 !important;
-            color: white !important;
-        }
-
-        .tela-full { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; background: var(--dynamic-bg); overflow-y: auto; }
-        
-        .header-cifra { position: fixed; top: 0; left: 0; width: 100%; background: #162431; padding: 12px 8px 14px 8px; border-bottom: 3px solid var(--ui-accent); z-index: 11000; transition: transform 0.3s ease; }
-        .grid-controles { display: grid; grid-template-columns: 0.7fr 1fr 1fr 1.2fr 0.8fr; gap: 8px; margin-top: 8px; }
-        
-        .btn-cmd-header, .bloco-ajuste, .btn-play-header {
-            position: relative; transition: all 0.05s ease; box-shadow: 0 4px 0px rgba(0,0,0,0.5), 0 4px 10px rgba(0,0,0,0.4);
-            background: var(--btn-header-bg) !important; color: white !important; border: 1px solid var(--btn-header-border) !important; border-bottom: 4px solid var(--btn-header-bottom) !important;
-            border-radius: 12px; height: 50px;
-        }
-        
-        .btn-cmd-header { 
-            font-weight: bold; font-size: 12px; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; cursor: pointer;
-        }
-        .btn-cmd-header:active, .btn-play-header:active { transform: translateY(3px); border-bottom: 1px solid var(--btn-header-bottom) !important; box-shadow: 0 1px 0px rgba(0,0,0,0.5), 0 2px 5px rgba(0,0,0,0.4); }
-
-        .btn-play-header { color: white; font-weight: 900; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 100%; }
-
+        .header-cifra { position: fixed; top: 0; left: 0; width: 100%; background: #112233; padding: 14px 8px; border-bottom: 3.5px solid var(--ui-accent); z-index: 11000; transition: transform 0.3s ease; }
+        .grid-controles { display: grid; grid-template-columns: 0.7fr 1fr 1fr 1.2fr 0.9fr; gap: 5px; margin-top: 6px; }
+        .btn-cmd-header, .bloco-ajuste, .btn-play-header { background: var(--btn-header-bg) !important; color: white !important; border: 1px solid var(--btn-header-border) !important; border-bottom: 3px solid var(--btn-header-bottom) !important; border-radius: 8px; height: 40px; cursor: pointer; }
+        .btn-cmd-header { font-weight: bold; font-size: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .btn-play-header { color: white; font-weight: 900; font-size: 13px; display: flex; align-items: center; justify-content: center; width: 100%; }
         .bloco-ajuste { display: flex; overflow: hidden; }
-        .bloco-ajuste button { flex: 1; border: none; background: none; color: white; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; height: 100%; }
-        .bloco-ajuste button:active { background: rgba(0, 0, 0, 0.2); }
-        .bloco-ajuste .info { flex: 1.3; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; color: var(--ui-accent); background: rgba(0,0,0,0.3); height: 100%; border-left: 1px solid rgba(255,255,255,0.1); border-right: 1px solid rgba(255,255,255,0.1); }
-        .bloco-ajuste:has(button:active) { transform: translateY(2px); border-bottom: 2px solid var(--btn-header-bottom) !important; box-shadow: 0 2px 0px rgba(0,0,0,0.5), 0 3px 6px rgba(0,0,0,0.4); }
-
-        .text-verde { color: #2ecc71 !important; }
-        .text-vermelho { color: #e74c3c !important; }
-        .text-ciano { color: #00ffff !important; }
-
+        .bloco-ajuste button { flex: 1; border: none; background: none; color: white; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .bloco-ajuste .info { flex: 1.1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 9px; font-weight: bold; color: var(--ui-accent); background: rgba(0,0,0,0.3); }
+        
         #viewTexto { 
             white-space: pre-wrap; 
             font-family: var(--current-family); 
             font-size: var(--font-size); 
             font-weight: var(--font-weight); 
-            padding: 155px 35px 220px 35px; 
-            line-height: 1.45; 
-            max-width: 90%; 
-            margin: 0 auto; 
+            padding: 120px 8% 180px 8%; 
+            line-height: 1.6; 
+            outline: none; 
+            text-align: left;
+            width: 100%;
+            margin: 0 auto;
         }
         
-        .linha-letra { display: block; color: var(--dynamic-text) !important; margin: 0; padding: 0; min-height: 1.4em; }
-        .linha-cifra { display: block; color: var(--dynamic-text) !important; font-weight: bold !important; margin: 0; padding: 0; min-height: 1.4em; }
-        .linha-vazia { display: block; min-height: 1.4em; }
-
-        .panel-right-control { 
-            position: fixed; bottom: 20px; right: 20px; width: 150px; background: rgba(22, 36, 49, 0.95); 
-            display: flex; flex-direction: column; gap: 10px; padding: 12px; z-index: 11000; border-radius: 14px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-        .row-arrows { display: flex; gap: 10px; width: 100%; }
-        .btn-nav-pad { flex: 1; height: 52px; background: #34495e; color: white; border: none; border-radius: 8px; font-size: 24px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .btn-sair-pad { width: 100%; height: 48px; background: #ff4757; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 15px; letter-spacing: 1px; cursor: pointer; }
+        .panel-right-control { position: fixed; bottom: 20px; right: 15px; width: 130px; background: rgba(22, 36, 49, 0.98); display: flex; flex-direction: column; gap: 6px; padding: 10px; z-index: 11000; border-radius: 12px; border: 1.5px solid rgba(255,255,255,0.12); transition: transform 0.3s ease, opacity 0.3s ease; }
+        .btn-sair-pad { width: 100%; height: 38px; background: #ff4757; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; }
         
-        .contador-setlist {
-            font-size: 12px; font-weight: bold; color: var(--ui-accent); text-align: center;
-            background: rgba(0,0,0,0.4); padding: 5px; border-radius: 6px; text-transform: uppercase;
-        }
-
-        .ui-hidden { transform: translateY(-110%); } 
-        .footer-hidden { transform: translate(0, 150px); opacity: 0; pointer-events: none; } 
-
-        .item-lista-geral { background: rgba(255,255,255,0.07); padding: 14px 18px; border-radius: 12px; margin-bottom: 10px; display: flex; align-items: center; text-transform: uppercase; border: 1px solid #34495e; }
-
-        .container-cfg { padding: 30px 20px; max-width: 650px; margin: 0 auto; padding-bottom: 140px; display: flex; flex-direction: column; gap: 12px; }
-        .label-cfg { color: var(--ui-accent); display: block; margin-top: 22px; font-size: 16px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .container-cfg { padding: 25px 0; width: 85%; margin: 0 auto; padding-bottom: 140px; display: flex; flex-direction: column; gap: 18px; }
+        .label-cfg { color: var(--ui-accent); display: block; font-size: 13px; font-weight: 900; text-transform: uppercase; }
+        .bloco-paleta { display: flex; align-items: center; gap: 12px; width: 100%; height: 50px; position: relative; }
+        input[type=range].super-paleta { flex: 1; -webkit-appearance: none; height: 100%; border-radius: 10px; background: linear-gradient(to right, #000, #111, #fff, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #888); outline: none; }
+        input[type=range].super-paleta::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #00ffff; border: 2px solid white; }
+        .preview-cor { width: 50px; height: 100%; border-radius: 10px; border: 2px solid white; flex-shrink: 0; }
+        input[type=range]#cfgSize { -webkit-appearance: none; width: 100%; height: 50px; background: #1b2d3c; border-radius: 10px; outline: none; }
+        input[type=range]#cfgSize::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #00ffff; }
+        .btn-bold { width: 100%; padding: 15px; background: #263848; color: white; border: 1px solid #344d63; border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer; text-transform: uppercase; }
+        .btn-bold.active { background: #f1c40f; color: black; font-weight: 900; }
+        .btn-toggle-fontes { width: 100%; padding: 15px; background: #1a2a38; color: white; border: 1.5px solid var(--ui-accent); border-radius: 10px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .seletor-fontes { max-height: 0; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; transition: max-height 0.25s ease-out; }
+        .seletor-fontes.aberto { max-height: 220px; overflow-y: auto; margin-top: 6px; border: 1.5px solid #263848; }
+        .font-option { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.06); cursor: pointer; font-size: 13px; }
+        .font-option.active { border-left: 5px solid var(--ui-accent); background: rgba(0,255,255,0.1); }
+        .btn-cfg-acao { width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold; font-size: 14px; cursor: pointer; text-transform: uppercase; }
+        .btn-glow-green { background: linear-gradient(135deg, #00ff88, #00eed0); color: #071724; font-weight: 900; }
+        .btn-green { background: #2ecc71; color: white; } 
+        .btn-orange { background: #e74c3c; color: white; }
+        .btn-red-back { background: #ff4757; color: white; } 
         
-        .bloco-paleta { display: flex; align-items: center; gap: 15px; margin-top: 8px; width: 100%; height: 55px; position: relative; }
-        input[type=range].super-paleta { flex: 1; -webkit-appearance: none; height: 100%; border-radius: 10px; background: linear-gradient(to right, #000, #111, #fff, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #888); outline: none; cursor: pointer; }
-        .preview-cor { width: 70px; height: 100%; border-radius: 10px; border: 2px solid white; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.4); }
-
-        .btn-toggle-fontes { width: 100%; padding: 20px; background: #2c3e50; color: white; border: 2px solid var(--ui-accent); border-radius: 12px; margin-top: 15px; font-weight: bold; font-size: 18px; text-align: left; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .seletor-fontes { max-height: 0; background: rgba(255,255,255,0.05); border-radius: 12px; border: 0 solid #34495e; overflow: hidden; transition: max-height 0.3s ease-out, border-width 0.1s; }
-        .seletor-fontes.aberto { max-height: 450px; border-width: 1px; overflow-y: auto; margin-top: 8px; }
-        
-        .font-option { display: flex; align-items: center; padding: 18px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-        .font-option.active { border-left: 6px solid var(--ui-accent); background: rgba(0,255,255,0.1); }
-        .preview-box-font { width: 45px; height: 45px; background: white; color: black; display: flex; align-items: center; justify-content: center; border-radius: 8px; font-size: 22px; margin-right: 15px; font-weight: bold; }
-        .preview-font-name { flex: 1; font-size: 18px; }
-
-        .btn-bold { width: 100%; padding: 20px; margin-top: 15px; background: #34495e; color: white; border: 1px solid #456173; border-radius: 12px; font-weight: 900; font-size: 18px; cursor: pointer; }
-        .btn-bold.active { background: #f1c40f; color: black; box-shadow: 0 0 15px #f1c40f; }
+        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(7, 23, 36, 0.98); z-index: 999999; flex-direction: column; align-items: center; justify-content: center; }
+        .spinner { border: 5px solid rgba(0,255,255,0.1); border-radius: 50%; border-top: 5px solid var(--ui-accent); width: 45px; height: 45px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .progress-bar-container { width: 80%; max-width: 400px; height: 12px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-top: 15px; }
+        .progress-bar-fill { width: 0%; height: 100%; background: var(--ui-accent); transition: width 0.1s ease; }
 
         .editor-fullscreen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #ffffff !important; color: #000000 !important; z-index: 99999; padding: 15px; flex-direction: column; }
         .editor-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 2px solid #ccc; margin-bottom: 10px; }
@@ -242,55 +117,80 @@
         .btn-editor-salvar { background: #2ecc71; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
         .btn-editor-cancelar { background: #e74c3c; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
 
-        .loading-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(11,26,42,0.95); z-index:999999; flex-direction:column; align-items:center; justify-content:center; padding:20px; }
-        .spinner { border: 6px solid rgba(0,255,255,0.1); border-radius: 50%; border-top: 6px solid var(--ui-accent); width: 60px; height: 60px; animation: spin 1s linear infinite; margin-bottom: 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .progress-bar-container { width: 80%; max-width: 400px; height: 12px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-top: 15px; }
-        .progress-bar-fill { width: 0%; height: 100%; background: var(--ui-accent); transition: width 0.1s ease; }
+        .ui-hidden { transform: translateY(-110%); } 
+        .footer-hidden { transform: translate(0, 150px); opacity: 0; pointer-events: none; } 
 
+        .item-lista-geral { background: rgba(255,255,255,0.07); padding: 14px 18px; border-radius: 12px; margin-bottom: 10px; display: flex; align-items: center; text-transform: uppercase; border: 1px solid #34495e; }
         .box-pastas-importadas { background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid #34495e; padding: 12px; margin-top: 8px; max-height: 180px; overflow-y: auto; }
         .item-pasta-salva { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 10px 14px; border-radius: 8px; margin-bottom: 8px; font-size: 14px; font-weight: bold; text-transform: uppercase; color: #fff; }
+        .contador-setlist { font-size: 12px; font-weight: bold; color: var(--ui-accent); text-align: center; background: rgba(0,0,0,0.4); padding: 5px; border-radius: 6px; text-transform: uppercase; }
+        .row-arrows { display: flex; gap: 10px; width: 100%; }
+        .btn-nav-pad { flex: 1; height: 52px; background: #34495e; color: white; border: none; border-radius: 8px; font-size: 24px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .text-verde { color: #2ecc71 !important; }
+        .text-vermelho { color: #e74c3c !important; }
+        .text-ciano { color: #00ffff !important; }
+        .linha-cifra, .linha-letra { color: var(--dynamic-text); display: block; }
+        
+        .fullscreen-mode #headerCifra,
+        .fullscreen-mode .panel-right-control {
+            display: none !important;
+        }
+        
+        .fullscreen-mode #viewTexto {
+            padding-top: 30px !important;
+            padding-bottom: 30px !important;
+        }
     </style>
 </head>
 <body id="appBody">
 
 <div id="loadingOverlay" class="loading-overlay">
     <div class="spinner"></div>
-    <h3 id="loadingText" style="color:white; text-align:center;">Processando cifras...</h3>
+    <h3 id="loadingText" style="color:white; margin-top:15px;">Processando...</h3>
     <div class="progress-bar-container">
         <div id="progressBar" class="progress-bar-fill"></div>
     </div>
 </div>
 
 <div id="telaHome" class="home-container">
-    <div class="logo-central"><h1>CIFRA FLASH</h1></div>
-    
-    <input type="search" id="busca" class="busca-input" placeholder="Pesquisar por música ou cantor..." oninput="filtrar()" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" inputmode="search" name="busca_cifra_flash_app">
-    
-    <div id="listaResultados"></div>
-    
-    <div class="menu-container" id="menuFlutuanteHome">
-        <button class="btn-sub-menu" title="Histórico" onclick="event.stopPropagation(); fecharMenuHome(); abrirTela('telaHistorico')">🕒</button>
-        <button class="btn-sub-menu" title="Setlist" onclick="event.stopPropagation(); fecharMenuHome(); abrirTela('telaSetlist')">📂</button>
-        <button class="btn-sub-menu" title="Configurações" onclick="event.stopPropagation(); fecharMenuHome(); abrirTela('telaConfig')">⚙️</button>
-        <button class="btn-menu-principal" id="btnTriggerMenu" onclick="event.stopPropagation(); toggleMenuHome()">+</button>
+    <div class="bloco-topo">
+        <div class="logo-central"><h1>CIFRA FLASH</h1></div>
+        <div class="area-busca-container" onclick="event.stopPropagation();">
+            <div class="barra-busca-inferior">
+                <input type="text" id="inputBuscaHome" class="input-busca" placeholder="🔎 Buscar por música ou cantor..." oninput="executarBuscaHome(this.value)">
+                <button id="btnLimparBuscaHome" class="btn-busca-limpar" onclick="limparEFecharBuscaHome()">X</button>
+            </div>
+            <div id="containerResultadosHome" class="janela-resultados-home"></div>
+        </div>
+    </div>
+    <div class="menu-flutuante-container" id="menuFlutuante" onclick="event.stopPropagation();">
+        <button class="btn-float-item" onclick="fecharMenuHome(); abrirTela('telaHistorico')">🕒</button>
+        <button class="btn-float-item" onclick="fecharMenuHome(); abrirTela('telaSetlist')">📂</button>
+        <button class="btn-float-item" onclick="fecharMenuHome(); abrirTela('telaConfig')">⚙️</button>
+        <button class="btn-trigger-menu" onclick="toggleMenuHome()">+</button>
     </div>
 </div>
 
 <div id="telaCifra" class="tela-full">
     <div id="headerCifra" class="header-cifra">
-        <h2 id="titulo" style="text-align:center; font-size:15px;">---</h2>
+        <h2 id="titulo" style="text-align:center; font-size:15px; text-transform: uppercase; letter-spacing: 1px;">---</h2>
         <div class="grid-controles">
-            <button class="btn-cmd-header" onclick="abrirEditor()">EDIT</button>
-            <div class="bloco-ajuste"><button onclick="ajustarVel(-1)">-</button><div class="info">VEL<br><b id="velVal">1</b></div><button onclick="ajustarVel(1)">+</button></div>
-            <div class="bloco-ajuste"><button onclick="ajustarTom(-1)">-</button><div class="info">TOM<br><b id="tomVal">0</b></div><button onclick="ajustarTom(1)">+</button></div>
+            <button class="btn-cmd-header" onclick="abrirEditor()">✏️ EDIT</button>
+            <div class="bloco-ajuste">
+                <button onclick="ajustarVel(-1)">-</button>
+                <div class="info"><span>VEL</span><b id="velVal">1</b></div>
+                <button onclick="ajustarVel(1)">+</button>
+            </div>
+            <div class="bloco-ajuste">
+                <button onclick="ajustarTom(-1)">-</button>
+                <div class="info"><span>TOM</span><b id="tomVal">0</b></div>
+                <button onclick="ajustarTom(1)">+</button>
+            </div>
             <button id="btnVisibilidadeCifra" class="btn-cmd-header" onclick="toggleVisibilidadeCifra()">CIFRA<br><b id="statusCifraText" class="text-ciano">ON</b></button>
-            <button id="btnScroll" class="btn-play-header" onclick="toggleScroll()"><span id="txtBtnPlay" class="text-verde">PLAY</span></button>
+            <button id="btnScroll" class="btn-play-header" onclick="toggleScroll()"><span id="txtBtnPlay" class="text-verde">▶ PLAY</span></button>
         </div>
     </div>
-    
-    <div id="viewTexto"></div>
-    
+    <div id="viewTexto" contenteditable="false"></div>
     <div id="footerCifra" class="panel-right-control">
         <div id="blocoNavegacaoSetlist" style="display: none; flex-direction: column; gap: 8px; width: 100%;">
             <div id="contadorSetlist" class="contador-setlist">Música 0 de 0</div>
@@ -303,103 +203,72 @@
     </div>
 </div>
 
-<div id="telaConfig" class="tela-full" style="background:var(--ui-bg-dark); overflow-y: auto;">
+<div id="telaConfig" class="tela-full">
     <div class="container-cfg">
-        <h2 style="color:var(--ui-accent); text-align:center; margin-bottom: 10px;">PAINEL DE ESTILOS</h2>
-        
-        <label class="label-cfg">FUNDO DA CIFRA</label>
-        <div class="bloco-paleta">
-            <input type="range" id="cfgBg" class="super-paleta" min="0" max="100" value="3" oninput="aplicarEstilos(true)">
-            <div id="previewBg" class="preview-cor"></div>
+        <h2 style="color:var(--ui-accent); text-align:center; font-size:18px;">PAINEL DE CONFIGURAÇÕES</h2>
+        <button class="btn-cfg-acao btn-glow-green" onclick="recarregarListaEVoltar()">🔄 FORÇAR ATUALIZAÇÃO DO BANCO</button>
+        <div class="bloco-item-config">
+            <label class="label-cfg">📁 Pastas Ativas no Sistema</label>
+            <div id="pastasGerenciadorConfig" class="box-pastas-config"></div>
         </div>
-        
-        <label class="label-cfg">COR DA MÚSICA</label>
-        <div class="bloco-paleta">
-            <input type="range" id="cfgText" class="super-paleta" min="0" max="100" value="20" oninput="aplicarEstilos(true)">
-            <div id="previewText" class="preview-cor"></div>
-        </div>
-
-        <label class="label-cfg">TAMANHO DA LETRA</label>
-        <input type="range" id="cfgSize" style="-webkit-appearance:none; width:100%; height:50px; background:#34495e; border-radius:12px; margin-top:5px; outline:none;" min="14" max="80" value="24" oninput="aplicarEstilos(true)">
-
-        <button id="btnBold" class="btn-bold" onclick="toggleBold()">NEGRITO (B)</button>
-
-        <button class="btn-toggle-fontes" onclick="toggleMenuFontes()">
-            <span>🔤 ALTERAR FONTE DA MÚSICA</span>
-            <span id="setaMenu">▼</span>
-        </button>
-        
-        <div class="seletor-fontes" id="listaFontes">
-            <div id="f-default" class="font-option active" onclick="setFonte('Segoe UI', this)">
-                <div class="preview-box-font" style="font-family:'Segoe UI'">Aa</div>
-                <div class="preview-font-name">Padrão Sistema</div>
-            </div>
-            <div id="f-montserrat" class="font-option" onclick="setFonte('Montserrat', this)">
-                <div class="preview-box-font" style="font-family:'Montserrat'">Aa</div>
-                <div class="preview-font-name">Montserrat (Forte)</div>
-            </div>
-            <div id="f-robotomono" class="font-option" onclick="setFonte('Roboto Mono', this)">
-                <div class="preview-box-font" style="font-family:'Roboto Mono'">Aa</div>
-                <div class="preview-font-name">Roboto Mono (Espaçada)</div>
-            </div>
-            <div id="f-bebas" class="font-option" onclick="setFonte('Bebas Neue', this)">
-                <div class="preview-box-font" style="font-family:'Bebas Neue'">Aa</div>
-                <div class="preview-font-name">Bebas Neue (Condensada)</div>
-            </div>
-            <div id="f-dancing" class="font-option" onclick="setFonte('Dancing Script', this)">
-                <div class="preview-box-font" style="font-family:'Dancing Script'">Aa</div>
-                <div class="preview-font-name">Dancing (Manuscrita)</div>
-            </div>
-            <div id="f-courier" class="font-option" onclick="setFonte('Courier Prime', this)">
-                <div class="preview-box-font" style="font-family:'Courier Prime'">Aa</div>
-                <div class="preview-font-name">Courier (Máquina)</div>
-            </div>
-            <div id="f-oswald" class="font-option" onclick="setFonte('Oswald', this)">
-                <div class="preview-box-font" style="font-family:'Oswald'">Aa</div>
-                <div class="preview-font-name">Oswald (Moderna)</div>
-            </div>
-            <div id="f-ubuntu" class="font-option" onclick="setFonte('Ubuntu', this)">
-                <div class="preview-box-font" style="font-family:'Ubuntu'">Aa</div>
-                <div class="preview-font-name">Ubuntu (Suave)</div>
-            </div>
-            <div id="f-arvo" class="font-option" onclick="setFonte('Arvo', this)">
-                <div class="preview-box-font" style="font-family:'Arvo'">Aa</div>
-                <div class="preview-font-name">Arvo (Clássica)</div>
-            </div>
-            <div id="f-playfair" class="font-option" onclick="setFonte('Playfair Display', this)">
-                <div class="preview-box-font" style="font-family:'Playfair Display'">Aa</div>
-                <div class="preview-font-name">Playfair (Elegante)</div>
+        <div class="bloco-item-config">
+            <label class="label-cfg">Fundo da Cifra</label>
+            <div class="bloco-paleta">
+                <input type="range" id="cfgBg" class="super-paleta" min="0" max="100" value="3" oninput="aplicarEstilos(true)">
+                <div id="previewBg" class="preview-cor"></div>
             </div>
         </div>
-
-        <label class="label-cfg" style="margin-top:25px;">📂 PASTAS / ZIPs CARREGADOS</label>
-        <div id="boxPastas" class="box-pastas-importadas"></div>
-
-        <hr style="border: 0; border-top: 1px dashed rgba(255,255,255,0.2); margin-top: 25px; margin-bottom: 10px;">
-
-        <button onclick="document.getElementById('zipFile').click()" style="width:100%; padding:18px; background:#2ecc71; color:white; border-radius:12px; border:none; margin-top:10px; font-weight:bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3); font-size:15px;">📥 IMPORTAR NOVO ZIP COMPACTADO (.ZIP)</button>
-        <input type="file" id="zipFile" accept=".zip" onchange="importarZip(this)" style="display:none">
-
-        <button onclick="document.getElementById('filesSoltos').click()" style="width:100%; padding:18px; background:#3498db; color:white; border-radius:12px; border:none; margin-top:12px; font-weight:bold; box-shadow: 0 4px 10px rgba(0,0,0,0.3); font-size:15px;">📂 IMPORTAR PASTA OU TEXTOS (.TXT)</button>
-        <input type="file" id="filesSoltos" webkitdirectory directory multiple accept=".txt" onchange="importarSoltos(this)" style="display:none">
-        
-        <button onclick="limparBancoComConfirmacao()" style="width:100%; margin-top:12px; padding:14px; background:#e74c3c; color:white; border-radius:12px; border:none; font-weight:bold; font-size: 14px;">⚠️ APAGAR TODAS AS MÚSICAS DO BANCO</button>
-
-        <button onclick="fechar()" style="width:100%; margin-top:25px; padding:18px; background:#ff4757; color:white; border-radius:12px; border:none; font-weight:bold; font-size:16px;">VOLTAR</button>
+        <div class="bloco-item-config">
+            <label class="label-cfg">Cor da Música</label>
+            <div class="bloco-paleta">
+                <input type="range" id="cfgText" class="super-paleta" min="0" max="100" value="20" oninput="aplicarEstilos(true)">
+                <div id="previewText" class="preview-cor"></div>
+            </div>
+        </div>
+        <div class="bloco-item-config">
+            <label class="label-cfg">Tamanho da Letra</label>
+            <input type="range" id="cfgSize" min="12" max="60" value="18" oninput="aplicarEstilos(true)">
+        </div>
+        <button id="btnBold" class="btn-bold" onclick="toggleBold()">Negrito (B)</button>
+        <div class="bloco-item-config">
+            <button class="btn-toggle-fontes" onclick="toggleMenuFontes()">
+                <span>📝 ALTERAR FONTE DA MÚSICA</span>
+                <span id="setaMenu">▼</span>
+            </button>
+            <div class="seletor-fontes" id="listaFontes">
+                <div class="font-option active" onclick="setFonte('Segoe UI', this)">Padrão Sistema</div>
+                <div class="font-option" onclick="setFonte('Montserrat', this)">Montserrat</div>
+                <div class="font-option" onclick="setFonte('Roboto Mono', this)">Roboto Mono</div>
+                <div class="font-option" onclick="setFonte('Open Sans', this)">Open Sans</div>
+                <div class="font-option" onclick="setFonte('Playfair Display', this)">Playfair Display</div>
+                <div class="font-option" onclick="setFonte('Bebas Neue', this)">Bebas Neue</div>
+                <div class="font-option" onclick="setFonte('Courier Prime', this)">Courier Prime</div>
+                <div class="font-option" onclick="setFonte('Dancing Script', this)">Dancing Script</div>
+                <div class="font-option" onclick="setFonte('Oswald', this)">Oswald</div>
+                <div class="font-option" onclick="setFonte('Ubuntu', this)">Ubuntu</div>
+                <div class="font-option" onclick="setFonte('Arvo', this)">Arvo</div>
+            </div>
+        </div>
+        <button class="btn-cfg-acao btn-green" onclick="document.getElementById('zipFile').click()">📥 Importar Arquivo .ZIP</button>
+        <input type="file" id="zipFile" accept=".zip" onchange="importarZipReal(this)" style="display:none">
+        <button class="btn-cfg-acao btn-green" onclick="document.getElementById('filesSoltos').click()">📂 Importar Pasta de Textos</button>
+        <input type="file" id="filesSoltos" multiple webkitdirectory directory accept=".txt" onchange="importarSoltosReal(this)" style="display:none">
+        <button class="btn-cfg-acao btn-orange" onclick="limparBancoComConfirmacao()">⚠️ Apagar e Resetar Banco</button>
+        <button class="btn-cfg-acao btn-red-back" onclick="fechar()">Voltar</button>
     </div>
 </div>
 
-<div id="telaSetlist" class="tela-full" style="background:var(--ui-bg-dark); padding:20px;">
-    <h2 style="color:var(--ui-accent); text-align:center; margin-bottom:15px;">MINHA SETLIST</h2>
-    <button style="width:100%; padding:18px; background:#27ae60; color:white; border:none; border-radius:12px; margin-bottom:15px; font-weight:bold; font-size:16px;" onclick="iniciarShow()">▶ INICIAR SHOW</button>
+<div id="telaSetlist" class="tela-full" style="padding:15px;">
+    <h2 style="color:var(--ui-accent); text-align:center; margin-bottom:15px; font-size:18px;">MINHA SETLIST</h2>
+    <button style="width:100%; padding:15px; background:#27ae60; color:white; border:none; border-radius:12px; margin-bottom:15px; font-weight:bold; font-size:16px;" onclick="iniciarShow()">▶ INICIAR SHOW</button>
     <div id="listaSetlist"></div>
-    <button onclick="fechar()" style="width:100%; padding:15px; background:#ff4757; color:white; border:none; border-radius:12px; font-weight:bold;">VOLTAR</button>
+    <button onclick="fechar()" class="btn-cfg-acao btn-red-back" style="margin-top:10px;">VOLTAR</button>
 </div>
 
-<div id="telaHistorico" class="tela-full" style="background:var(--ui-bg-dark); padding:20px;">
-    <h2 style="color:var(--ui-accent); text-align:center; margin-bottom:15px;">ÚLTIMAS TOCADAS (MAX 20)</h2>
+<div id="telaHistorico" class="tela-full" style="padding:15px;">
+    <h2 style="color:var(--ui-accent); text-align:center; margin-bottom:12px; font-size:18px;">ÚLTIMAS TOCADAS (MAX 20)</h2>
     <div id="listaHistorico"></div>
-    <button onclick="fechar()" style="width:100%; padding:15px; background:#ff4757; color:white; border:none; border-radius:12px; margin-top:10px; font-weight:bold;">VOLTAR</button>
+    <button onclick="fechar()" class="btn-cfg-acao btn-red-back" style="margin-top:12px;">VOLTAR</button>
 </div>
 
 <div id="telaEditor" class="editor-fullscreen">
@@ -408,66 +277,934 @@
         <h3 style="color:#000;">MODO EDIÇÃO</h3>
         <button class="btn-editor-salvar" onclick="salvarEdicao()">SALVAR</button>
     </div>
-    <textarea id="areaEdicao" class="editor-textarea" 
-              placeholder="Digite ou cole sua cifra aqui..." 
-              autocomplete="off" 
-              autocorrect="off" 
-              autocapitalize="none" 
-              spellcheck="false"></textarea>
+    <textarea id="areaEdicao" class="editor-textarea" placeholder="Digite ou cole sua cifra aqui..."></textarea>
 </div>
 
 <script>
-    // [FUNÇÕES RESTANTES DO SEU CÓDIGO PERMANECEM IGUAIS...]
-    // (Apenas atualize a função filtrar abaixo)
+    // ==================== VARIÁVEIS GLOBAIS ====================
+    let db = null, musicas = [];
+    let indexAtual = -1, txtBase = "", vel = 1, tomDeslocamento = 0, exibirCifras = true;
+    let scrollAtivo = false, tocandoTela = false, isBold = false, modoShow = false;
+    let setlistIds = [], historicoIds = [];
+    let posicaoSetlistAtual = 0;
+    let animationId = null, tempoParadoTimeout = null;
+    let posicaoDecimal = 0;
+    let lastTapTime = 0;
+    let fullscreenActive = false;
 
-    function filtrar() {
-        const input = document.getElementById('busca');
-        const termo = input.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").trim();
-        const listaDiv = document.getElementById('listaResultados');
-        
-        if (!termo) { 
-            listaDiv.innerHTML = "";
-            listaDiv.style.display = 'none'; 
-            return; 
+    const escalaNotas = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    const mapaBemois = { 'Db': 'C#', 'Eb': 'D#', 'Gb': 'F#', 'Ab': 'G#', 'Bb': 'A#' };
+
+    // ==================== BLOQUEIO DO GESTO DE PINÇA (ZOOM) ====================
+    document.addEventListener('touchmove', function(event) {
+        if (event.touches.length > 1) {
+            event.preventDefault();
         }
+    }, { passive: false });
+
+    document.addEventListener('gesturestart', function(event) {
+        event.preventDefault();
+    });
+
+    // ==================== FUNÇÃO DE TELA CHEIA REAL ====================
+    function toggleRealFullscreen() {
+        const telaCifra = document.getElementById('telaCifra');
         
-        let htmlGerado = "";
-        let encontrouAlgo = false;
-
-        for(let i = 0; i < musicas.length; i++) {
-            const m = musicas[i];
-            
-            // Removemos acentos e normalizamos para busca precisa
-            const nomeMusica = (m.n || "").toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace('.txt', '');
-            const nomeOrigem = (m.origem || "").toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace('.zip', '');
-
-            if(nomeMusica.includes(termo) || nomeOrigem.includes(termo)) {
-                encontrouAlgo = true;
-                const nomeExibicao = m.n.replace('.txt', '');
-                const tagOrigem = m.origem || "PASTA RAIZ";
-
-                htmlGerado += `
-                    <div class="card-musica">
-                        <div style="display:flex; flex-direction:column; gap:4px; flex:1; text-align:left;">
-                            <button class="btn-item-musica" onclick="modoShow = false; carregarMusica(${i})">${nomeExibicao}</button>
-                            <span class="tag-origem">${tagOrigem}</span>
-                        </div>
-                        <button style="background:var(--ui-accent); border:none; padding:12px 18px; border-radius:8px; color:black; font-weight:bold; cursor:pointer; font-size:16px;" onclick="addSet(${i})">+</button>
-                    </div>
-                `;
+        if (!fullscreenActive) {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) {
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) {
+                document.documentElement.msRequestFullscreen();
             }
-        }
-
-        if (encontrouAlgo) {
-            listaDiv.innerHTML = htmlGerado;
-            listaDiv.style.display = 'block';
+            
+            telaCifra.classList.add('fullscreen-mode');
+            fullscreenActive = true;
         } else {
-            listaDiv.innerHTML = "<p style='text-align:center; padding:20px; color:#aaa;'>Nenhum resultado encontrado...</p>";
-            listaDiv.style.display = 'block';
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+            
+            telaCifra.classList.remove('fullscreen-mode');
+            fullscreenActive = false;
         }
     }
 
-    // ... [RESTANTE DO SEU SCRIPT CONTINUA AQUI]
+    document.addEventListener('fullscreenchange', function() {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+            const telaCifra = document.getElementById('telaCifra');
+            telaCifra.classList.remove('fullscreen-mode');
+            fullscreenActive = false;
+        }
+    });
+
+    // ==================== FUNÇÕES DE UI ====================
+    function toggleMenuHome() { document.getElementById('menuFlutuante').classList.toggle('aberto'); }
+    function fecharMenuHome() { document.getElementById('menuFlutuante').classList.remove('aberto'); }
+    function toggleMenuFontes() { document.getElementById('listaFontes').classList.toggle('aberto'); }
+
+    function abrirTela(id) { 
+        pararMotor();
+        document.querySelectorAll('.tela-full').forEach(t => t.style.display='none'); 
+        document.getElementById(id).style.display='block'; 
+        if(id === 'telaConfig') renderizarGerenciadorPastas();
+        if(id === 'telaSetlist') renderizarSetlist();
+        if(id === 'telaHistorico') renderizarHistorico();
+        
+        if(id !== 'telaCifra' && fullscreenActive) {
+            const telaCifraEl = document.getElementById('telaCifra');
+            telaCifraEl.classList.remove('fullscreen-mode');
+            fullscreenActive = false;
+        }
+    }
+    
+    function fechar() { 
+        pararMotor();
+        scrollAtivo = false; modoShow = false;
+        document.getElementById('txtBtnPlay').innerHTML = "▶ PLAY";
+        document.getElementById('txtBtnPlay').className = "text-verde";
+        document.getElementById('headerCifra').classList.remove('ui-hidden');
+        document.getElementById('footerCifra').classList.remove('footer-hidden');
+        document.querySelectorAll('.tela-full').forEach(t => t.style.display='none'); 
+        
+        const telaCifraEl = document.getElementById('telaCifra');
+        telaCifraEl.classList.remove('fullscreen-mode');
+        fullscreenActive = false;
+    }
+
+    function mostrarCarregamento(m) { 
+        document.getElementById('loadingText').innerText = m; 
+        document.getElementById('progressBar').style.width = "0%";
+        document.getElementById('loadingOverlay').style.display = "flex"; 
+    }
+    function atualizarProgresso(p) { document.getElementById('progressBar').style.width = p + "%"; }
+    function ocultarCarregamento() { document.getElementById('loadingOverlay').style.display = "none"; }
+
+    // ==================== INDEXEDDB ====================
+    async function initDatabase() {
+        return new Promise((resolve) => {
+            const request = indexedDB.open("CifraFlashDB", 3);
+            request.onupgradeneeded = (e) => {
+                let database = e.target.result;
+                if (!database.objectStoreNames.contains("cifras")) {
+                    database.createObjectStore("cifras", { keyPath: "n" });
+                }
+                if (!database.objectStoreNames.contains("pastas")) {
+                    database.createObjectStore("pastas", { keyPath: "id", autoIncrement: true });
+                }
+            };
+            request.onsuccess = (e) => { db = e.target.result; resolve(); };
+            request.onerror = () => resolve();
+        });
+    }
+
+    function salvarNoBanco(nome, texto, pasta) {
+        return new Promise((resolve) => {
+            if(!db) return resolve();
+            const tx = db.transaction("cifras", "readwrite");
+            tx.objectStore("cifras").put({ n: nome, t: texto, origem: pasta });
+            tx.oncomplete = () => resolve();
+        });
+    }
+
+    function buscarMusicasNoBanco() {
+        return new Promise((resolve) => {
+            if(!db) return resolve([]);
+            const req = db.transaction("cifras", "readonly").objectStore("cifras").getAll();
+            req.onsuccess = () => resolve(req.result || []);
+            req.onerror = () => resolve([]);
+        });
+    }
+
+    function listarPastasDoBanco() {
+        return new Promise((resolve) => {
+            if(!db) return resolve([]);
+            const req = db.transaction("pastas", "readonly").objectStore("pastas").getAll();
+            req.onsuccess = () => resolve(req.result || []);
+            req.onerror = () => resolve([]);
+        });
+    }
+
+    function registrarPastaNoBanco(nomePasta) {
+        return new Promise((resolve) => {
+            if(!db) return resolve();
+            const tx = db.transaction("pastas", "readwrite");
+            tx.objectStore("pastas").add({ nome: nomePasta });
+            tx.oncomplete = () => resolve();
+        });
+    }
+
+    // ==================== FUNÇÃO DE EXCLUIR PASTA CORRIGIDA ====================
+    async function excluirPastaEConteudo(idPasta, nomePasta) {
+        if(!confirm(`Tem certeza que deseja deletar a pasta "${nomePasta}" e TODAS as suas cifras?\n\nEsta ação não pode ser desfeita!`)) return;
+        
+        mostrarCarregamento(`Removendo pasta "${nomePasta}"...`);
+        
+        try {
+            // 1. Remover a pasta do registro de pastas (se tiver ID)
+            if(idPasta && !isNaN(idPasta)) {
+                const txP = db.transaction("pastas", "readwrite");
+                txP.objectStore("pastas").delete(Number(idPasta));
+            }
+            
+            // 2. Remover todas as músicas que pertencem a esta pasta
+            const txM = db.transaction("cifras", "readwrite");
+            const storeM = txM.objectStore("cifras");
+            
+            let removidas = 0;
+            for(let m of musicas) {
+                const pastaMusica = m.origem || "Avulsas";
+                if(pastaMusica.toLowerCase() === nomePasta.toLowerCase()) {
+                    storeM.delete(m.n);
+                    removidas++;
+                }
+            }
+            
+            txM.oncomplete = async () => {
+                musicas = await buscarMusicasNoBanco();
+                renderizarGerenciadorPastas();
+                renderizarSetlist();
+                ocultarCarregamento();
+                alert(`✅ Pasta "${nomePasta}" removida com sucesso!\n📁 ${removidas} músicas foram excluídas.`);
+            };
+            
+            txM.onerror = (e) => {
+                console.error("Erro ao excluir músicas:", e);
+                ocultarCarregamento();
+                alert("Erro ao excluir as músicas da pasta.");
+            };
+            
+        } catch(e) { 
+            console.error("Erro na exclusão:", e);
+            ocultarCarregamento(); 
+            alert("Erro ao excluir a pasta. Tente novamente."); 
+        }
+    }
+
+    async function limparBancoComConfirmacao() {
+        if(confirm("Deseja APAGAR todas as músicas?")) {
+            mostrarCarregamento("Limpando banco...");
+            const tx = db.transaction(["cifras", "pastas"], "readwrite");
+            tx.objectStore("cifras").clear();
+            tx.objectStore("pastas").clear();
+            tx.oncomplete = async () => {
+                musicas = [];
+                setlistIds = [];
+                historicoIds = [];
+                localStorage.removeItem('setlist_flash');
+                localStorage.removeItem('historico_flash');
+                renderizarGerenciadorPastas();
+                ocultarCarregamento();
+                alert("Banco resetado!");
+            };
+        }
+    }
+
+    async function recarregarListaEVoltar() {
+        musicas = await buscarMusicasNoBanco();
+        document.getElementById('inputBuscaHome').value = "";
+        document.getElementById('containerResultadosHome').innerHTML = "";
+        document.getElementById('containerResultadosHome').style.display = 'none';
+        renderizarGerenciadorPastas();
+        fechar();
+    }
+
+    // ==================== RENDERIZAÇÕES ====================
+    async function renderizarGerenciadorPastas() {
+        const container = document.getElementById('pastasGerenciadorConfig');
+        if(!container) return;
+        container.innerHTML = "";
+        
+        let pastasMap = {};
+        musicas.forEach(m => { 
+            let p = m.origem || "Avulsas"; 
+            pastasMap[p] = (pastasMap[p] || 0) + 1; 
+        });
+        
+        let pastasLista = await listarPastasDoBanco();
+        let todasPastas = new Set();
+        Object.keys(pastasMap).forEach(p => todasPastas.add(p));
+        pastasLista.forEach(p => todasPastas.add(p.nome));
+        
+        if(todasPastas.size === 0) {
+            container.innerHTML = "<p style='text-align:center; padding:15px; color:#aaa;'>Nenhuma pasta importada ainda.</p>";
+            return;
+        }
+        
+        for(let nome of todasPastas) {
+            let item = document.createElement('div');
+            item.className = 'card-pasta-config';
+            let span = document.createElement('span');
+            span.className = 'nome-pasta-cfg';
+            span.innerHTML = `📁 ${nome} <b class="qtd-pasta-cfg">(${pastasMap[nome] || 0} músicas)</b>`;
+            let btnX = document.createElement('button');
+            btnX.className = 'btn-del-pasta-x';
+            btnX.innerText = "X";
+            let pastaEncontrada = pastasLista.find(p => p.nome === nome);
+            // CORREÇÃO: Usar closure para capturar os valores corretamente
+            const nomePasta = nome;
+            const idPasta = pastaEncontrada?.id;
+            btnX.onclick = function() {
+                excluirPastaEConteudo(idPasta, nomePasta);
+            };
+            item.appendChild(span);
+            item.appendChild(btnX);
+            container.appendChild(item);
+        }
+    }
+
+    function renderizarSetlist() {
+        const l = document.getElementById('listaSetlist'); 
+        if(!l) return;
+        l.innerHTML = "";
+        if(setlistIds.length === 0) { 
+            l.innerHTML = "<p style='text-align:center; padding:20px; color:#aaa;'>Nenhuma música na setlist</p>"; 
+            return; 
+        }
+        setlistIds.forEach((id, idx) => {
+            if(musicas[id]) {
+                let item = document.createElement('div'); 
+                item.className = 'item-lista-geral';
+                let spanNome = document.createElement('span'); 
+                spanNome.style.cssText = "flex:1; display:block; padding:12px 5px; font-weight:bold; cursor:pointer; font-size:18px;"; 
+                spanNome.innerText = musicas[id].n.replace('.txt','');
+                spanNome.onclick = () => { modoShow = true; posicaoSetlistAtual = idx; carregarMusica(id); };
+                let btnRem = document.createElement('button'); 
+                btnRem.style.cssText = "background:none; border:none; color:#ff4757; font-weight:bold; font-size:22px; padding:10px; cursor:pointer;"; 
+                btnRem.innerText = '✕';
+                btnRem.onclick = () => { setlistIds.splice(idx, 1); localStorage.setItem('setlist_flash', JSON.stringify(setlistIds)); renderizarSetlist(); };
+                item.appendChild(spanNome); 
+                item.appendChild(btnRem); 
+                l.appendChild(item);
+            }
+        });
+    }
+
+    function renderizarHistorico() {
+        const l = document.getElementById('listaHistorico'); 
+        if(!l) return;
+        l.innerHTML = "";
+        if(historicoIds.length === 0) { 
+            l.innerHTML = "<p style='text-align:center; padding:20px; color:#aaa;'>Histórico vazio</p>"; 
+            return; 
+        }
+        historicoIds.forEach((id, idx) => {
+            if(musicas[id]) {
+                let item = document.createElement('div'); 
+                item.className = 'item-lista-geral';
+                let spanNome = document.createElement('span'); 
+                spanNome.style.cssText = "flex:1; display:block; padding:12px 5px; font-weight:bold; cursor:pointer; font-size:18px;"; 
+                spanNome.innerText = `${idx+1}. ${musicas[id].n.replace('.txt','')}`;
+                spanNome.onclick = () => { modoShow = false; carregarMusica(id); };
+                let btnRem = document.createElement('button'); 
+                btnRem.style.cssText = "background:none; border:none; color:#ff4757; font-weight:bold; font-size:22px; padding:10px 15px; cursor:pointer;"; 
+                btnRem.innerText = '✕';
+                btnRem.onclick = () => { historicoIds.splice(idx, 1); localStorage.setItem('historico_flash', JSON.stringify(historicoIds)); renderizarHistorico(); };
+                item.appendChild(spanNome); 
+                item.appendChild(btnRem); 
+                l.appendChild(item);
+            }
+        });
+    }
+
+    // ==================== BUSCA ====================
+    function normalizarTextoParaBusca(texto) {
+        if (!texto) return "";
+        return texto.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[-_]/g, " ").replace(/\s+/g, " ").trim();
+    }
+
+    function executarBuscaHome(valorInput) {
+        const container = document.getElementById('containerResultadosHome');
+        const btnLimpar = document.getElementById('btnLimparBuscaHome');
+        if(!valorInput || valorInput.trim() === "") {
+            container.innerHTML = "";
+            container.style.display = "none";
+            btnLimpar.style.display = "none";
+            return;
+        }
+        btnLimpar.style.display = "block";
+        container.innerHTML = "";
+        let buscaLimpa = normalizarTextoParaBusca(valorInput);
+        let filtradas = musicas.filter(m => {
+            let nomeMusicaLimpo = normalizarTextoParaBusca(m.n);
+            let pastaLimpa = m.origem ? normalizarTextoParaBusca(m.origem) : "";
+            return nomeMusicaLimpo.includes(buscaLimpa) || pastaLimpa.includes(buscaLimpa);
+        });
+        
+        if(filtradas.length === 0) {
+            container.innerHTML = `<p style='text-align:center; padding:15px; color:#aaa; font-size:13px;'>Nenhuma música encontrada.</p>`;
+            container.style.display = "block";
+            return;
+        }
+
+        filtradas.forEach((m) => {
+            let card = document.createElement('div');
+            card.className = 'card-musica';
+            let btn = document.createElement('button');
+            btn.className = 'btn-item-musica';
+            btn.innerText = m.n.includes(" - ") ? m.n.split(" - ").pop() : m.n;
+            let musicId = musicas.findIndex(x => x.n === m.n);
+            btn.onclick = () => { limparEFecharBuscaHome(); modoShow = false; carregarMusica(musicId); };
+            let tag = document.createElement('span');
+            tag.className = 'tag-artista-pasta';
+            tag.innerText = m.origem || "Geral";
+            let btnAdd = document.createElement('button');
+            btnAdd.innerText = "+";
+            btnAdd.style.cssText = "background:var(--ui-accent); border:none; border-radius:8px; color:#071724; font-weight:bold; font-size:18px; width:36px; height:36px; cursor:pointer; margin-left:10px;";
+            btnAdd.onclick = () => { 
+                if(!setlistIds.includes(musicId)) setlistIds.push(musicId);
+                localStorage.setItem('setlist_flash', JSON.stringify(setlistIds));
+                alert("Adicionado à setlist!");
+            };
+            card.appendChild(btn); 
+            card.appendChild(tag);
+            card.appendChild(btnAdd);
+            container.appendChild(card);
+        });
+        container.style.display = "block";
+    }
+
+    function limparEFecharBuscaHome() {
+        document.getElementById('inputBuscaHome').value = "";
+        const container = document.getElementById('containerResultadosHome');
+        container.innerHTML = "";
+        container.style.display = "none";
+        document.getElementById('btnLimparBuscaHome').style.display = "none";
+    }
+
+    // ==================== IMPORTAÇÕES ====================
+    function tratarTextoQuebrado(str) {
+        if (!str) return "";
+        if (/Ã³|Ã¡|Ã©|Ã§|Ãª|Ã£|Ãº/i.test(str)) {
+            try { return decodeURIComponent(escape(str)); } catch(e) { return str; }
+        }
+        return str;
+    }
+
+    async function importarZipReal(input) {
+        if (!input.files || input.files.length === 0) return;
+        
+        if (typeof JSZip === 'undefined') {
+            alert("Biblioteca JSZip não carregada. Aguarde um momento e tente novamente.");
+            return;
+        }
+        
+        const arquivo = input.files[0];
+        
+        if (!arquivo.name.toLowerCase().endsWith('.zip')) {
+            alert("Por favor, selecione um arquivo .zip válido.");
+            input.value = "";
+            return;
+        }
+        
+        mostrarCarregamento(`Lendo arquivo: ${arquivo.name}...`);
+        atualizarProgresso(0);
+        
+        const leitor = new FileReader();
+        
+        leitor.onload = async function(evento) {
+            try {
+                const conteudoBinario = evento.target.result;
+                
+                let zip;
+                try {
+                    zip = await JSZip.loadAsync(conteudoBinario);
+                } catch(erroZip) {
+                    console.error("Erro ao carregar ZIP:", erroZip);
+                    ocultarCarregamento();
+                    alert("Não foi possível ler o arquivo ZIP. Verifique se o arquivo não está corrompido.");
+                    input.value = "";
+                    return;
+                }
+                
+                let arquivosTxt = [];
+                
+                function encontrarTodosTxt(pasta, caminhoAtual = "") {
+                    pasta.forEach((relativePath, zipEntry) => {
+                        const caminhoCompleto = caminhoAtual ? caminhoAtual + "/" + relativePath : relativePath;
+                        
+                        if (caminhoCompleto.includes('__MACOSX') || caminhoCompleto.includes('.DS_Store')) {
+                            return;
+                        }
+                        
+                        if (!zipEntry.dir) {
+                            if (caminhoCompleto.toLowerCase().endsWith('.txt')) {
+                                arquivosTxt.push({
+                                    caminho: caminhoCompleto,
+                                    nome: relativePath,
+                                    zipEntry: zipEntry
+                                });
+                            }
+                        } else {
+                            const subPasta = pasta.folder(relativePath);
+                            if (subPasta) {
+                                encontrarTodosTxt(subPasta, caminhoCompleto);
+                            }
+                        }
+                    });
+                }
+                
+                encontrarTodosTxt(zip);
+                
+                console.log("Total de arquivos .txt encontrados:", arquivosTxt.length);
+                
+                if (arquivosTxt.length === 0) {
+                    ocultarCarregamento();
+                    alert("Nenhum arquivo .txt foi encontrado dentro do ZIP.");
+                    input.value = "";
+                    return;
+                }
+                
+                const nomeZip = arquivo.name.replace(/\.zip$/i, '').toUpperCase();
+                const total = arquivosTxt.length;
+                let importados = 0;
+                let erros = 0;
+                
+                const TAMANHO_LOTE = 100;
+                let indiceAtual = 0;
+                
+                async function processarLote() {
+                    const fim = Math.min(indiceAtual + TAMANHO_LOTE, total);
+                    
+                    for (let i = indiceAtual; i < fim; i++) {
+                        const item = arquivosTxt[i];
+                        try {
+                            let conteudo = await item.zipEntry.async("string");
+                            
+                            if (conteudo && (conteudo.includes('Ã') || conteudo.includes('�'))) {
+                                try {
+                                    const buffer = await item.zipEntry.async("arraybuffer");
+                                    const decoder = new TextDecoder("iso-8859-1");
+                                    conteudo = decoder.decode(buffer);
+                                } catch(e) {}
+                            }
+                            
+                            if (conteudo && conteudo.trim() !== "") {
+                                let partes = item.caminho.split('/');
+                                let pastaNome = nomeZip;
+                                if (partes.length >= 2) {
+                                    pastaNome = partes[partes.length - 2].toUpperCase();
+                                }
+                                
+                                const cifraNome = item.nome.replace(/\.txt$/i, "");
+                                const nomeCompleto = `${pastaNome} - ${cifraNome}`;
+                                
+                                await salvarNoBanco(nomeCompleto, tratarTextoQuebrado(conteudo), pastaNome);
+                                importados++;
+                            } else {
+                                erros++;
+                            }
+                        } catch(erroItem) {
+                            console.error("Erro no arquivo:", item.nome, erroItem);
+                            erros++;
+                        }
+                        
+                        if ((i + 1) % 10 === 0 || i + 1 === total) {
+                            const percentual = Math.floor((i + 1) / total * 100);
+                            atualizarProgresso(percentual);
+                            document.getElementById('loadingText').innerHTML = `Processando: ${i + 1} de ${total} músicas<br>✅ ${importados} importadas | ❌ ${erros} erros`;
+                        }
+                        
+                        if ((i + 1) % 50 === 0) {
+                            await new Promise(r => setTimeout(r, 10));
+                        }
+                    }
+                    
+                    indiceAtual = fim;
+                    
+                    if (indiceAtual < total) {
+                        setTimeout(processarLote, 50);
+                    } else {
+                        if (importados > 0) {
+                            await registrarPastaNoBanco(nomeZip);
+                            musicas = await buscarMusicasNoBanco();
+                            renderizarGerenciadorPastas();
+                            ocultarCarregamento();
+                            
+                            let mensagem = `✅ Sucesso! ${importados} músicas importadas do ZIP.`;
+                            if (erros > 0) {
+                                mensagem += `\n⚠️ ${erros} arquivos ignorados (vazios ou com erro).`;
+                            }
+                            alert(mensagem);
+                            recarregarListaEVoltar();
+                        } else {
+                            ocultarCarregamento();
+                            alert("Nenhuma cifra válida foi encontrada. Verifique os arquivos .txt.");
+                        }
+                        input.value = "";
+                    }
+                }
+                
+                processarLote();
+                
+            } catch(erroGeral) {
+                ocultarCarregamento();
+                console.error("Erro geral:", erroGeral);
+                alert("Erro ao processar o arquivo ZIP.\n\nTente:\n- Usar outro navegador (Chrome ou Edge)\n- Compactar a pasta novamente\n- Usar a opção 'Importar Pasta de Textos'");
+                input.value = "";
+            }
+        };
+        
+        leitor.onerror = function() {
+            ocultarCarregamento();
+            alert("Erro ao ler o arquivo. Tente novamente.");
+            input.value = "";
+        };
+        
+        leitor.readAsArrayBuffer(arquivo);
+    }
+
+    async function importarSoltosReal(input) {
+        if (!input.files || input.files.length === 0) return;
+        mostrarCarregamento("Processando arquivos...");
+        let files = Array.from(input.files).filter(f => f.name.endsWith('.txt'));
+        const total = files.length;
+        
+        for(let i = 0; i < files.length; i++) {
+            let file = files[i];
+            let texto = await file.text();
+            let pastaNome = "Avulsas";
+            if(file.webkitRelativePath && file.webkitRelativePath.includes('/')) {
+                pastaNome = file.webkitRelativePath.split('/')[0];
+            }
+            let nomeLimpo = file.name.replace(/\.txt$/i, "");
+            await salvarNoBanco(`${pastaNome} - ${nomeLimpo}`, tratarTextoQuebrado(texto), pastaNome);
+            
+            if ((i + 1) % 10 === 0 || i + 1 === total) {
+                atualizarProgresso(Math.floor((i+1)/total * 100));
+                document.getElementById('loadingText').innerHTML = `Processando: ${i + 1} de ${total} arquivos...`;
+            }
+            
+            if ((i + 1) % 50 === 0) {
+                await new Promise(r => setTimeout(r, 10));
+            }
+        }
+        
+        musicas = await buscarMusicasNoBanco();
+        renderizarGerenciadorPastas();
+        ocultarCarregamento();
+        alert(`${files.length} arquivos importados!`);
+        input.value = "";
+    }
+
+    // ==================== FUNÇÕES DA CIFRA ====================
+    function processarNotaUnica(notaOriginal, semitons) {
+        if (semitons === 0) return notaOriginal;
+        let notaLimpa = notaOriginal.replace(/##+/g, '#');
+        if (mapaBemois[notaLimpa]) notaLimpa = mapaBemois[notaLimpa];
+        let idx = escalaNotas.indexOf(notaLimpa);
+        if (idx === -1) return notaOriginal;
+        let novoIdx = (idx + semitons) % 12;
+        if (novoIdx < 0) novoIdx += 12;
+        return escalaNotas[novoIdx];
+    }
+
+    function transporAcordeCompleto(acorde, semitons) {
+        if (semitons === 0) return acorde;
+        if (acorde.includes('/')) {
+            let partes = acorde.split('/');
+            return transporAcordeCompleto(partes[0], semitons) + '/' + transporAcordeCompleto(partes[1], semitons);
+        }
+        let fundamental = acorde.match(/^([A-G][#b]?)/);
+        if (!fundamental) return acorde;
+        let notaBase = fundamental[1];
+        let extensoes = acorde.substring(notaBase.length);
+        return processarNotaUnica(notaBase, semitons) + extensoes;
+    }
+
+    function transporLinhaCompleta(linha, semitons) {
+        if (semitons === 0) return linha;
+        const regexAcordes = /([A-G](?:[#b])?(?:m|M|maj|min|dim|aug|sus|add|alt|7|6|9|4|11|13)*(?:\/[A-G](?:[#b])?)?)/g;
+        return linha.replace(regexAcordes, (match) => transporAcordeCompleto(match, semitons));
+    }
+
+    function ajustarTom(delta) {
+        let novoTom = tomDeslocamento + delta;
+        if (novoTom >= -12 && novoTom <= 12) {
+            tomDeslocamento = novoTom;
+            document.getElementById('tomVal').innerText = (tomDeslocamento > 0 ? "+" : "") + tomDeslocamento;
+            renderizarCifra();
+        }
+    }
+
+    function toggleVisibilidadeCifra() {
+        exibirCifras = !exibirCifras;
+        const txt = document.getElementById('statusCifraText');
+        txt.innerText = exibirCifras ? "ON" : "OFF";
+        txt.className = exibirCifras ? "text-ciano" : "text-vermelho";
+        renderizarCifra();
+    }
+
+    function ajustarVel(d) { 
+        vel = Math.max(1, Math.min(100, vel + d));
+        document.getElementById('velVal').innerText = vel;
+    }
+
+    function toggleScroll() { 
+        scrollAtivo = !scrollAtivo; 
+        const txtBtn = document.getElementById('txtBtnPlay');
+        if(scrollAtivo) {
+            txtBtn.innerHTML = "⏸ PAUSE"; 
+            txtBtn.className = "text-vermelho";
+            posicaoDecimal = document.getElementById('telaCifra').scrollTop;
+            iniciarMotor();
+        } else {
+            txtBtn.innerHTML = "▶ PLAY"; 
+            txtBtn.className = "text-verde";
+            pararMotor();
+        }
+    }
+
+    function iniciarMotor() {
+        pararMotor();
+        if(!scrollAtivo || tocandoTela) return;
+        const container = document.getElementById('telaCifra');
+        function rodarSuave() {
+            if(scrollAtivo && !tocandoTela) {
+                posicaoDecimal += (vel * vel * 0.00045) + (vel * 0.015) + 0.1;
+                container.scrollTop = posicaoDecimal;
+                animationId = requestAnimationFrame(rodarSuave);
+            }
+        }
+        animationId = requestAnimationFrame(rodarSuave);
+    }
+
+    function pararMotor() {
+        if(animationId) { cancelAnimationFrame(animationId); animationId = null; }
+    }
+
+    function renderizarCifra() {
+        if (indexAtual === -1 || !musicas[indexAtual]) return;
+        let lines = txtBase.split('\n');
+        let htmlFinal = [];
+        for (let line of lines) {
+            if (line.trim() === "") { htmlFinal.push('<div class="linha-vazia"></div>'); continue; }
+            let ehCabecalho = /^(tom|intro|refrão|ponte|solo|coro):/i.test(line.trim());
+            const regexAcordes = /\b[A-G](?:[#b])?(?:m|M|maj|min|7|6|9|4|11|13|dim|aug|sus|add|alt)*(?:\/[A-G](?:[#b])?)?\b/g;
+            let matches = line.match(regexAcordes) || [];
+            if (ehCabecalho || (matches.length > 0 && (matches.join("").length / line.replace(/\s/g, "").length) >= 0.35)) {
+                if (!exibirCifras) continue;
+                htmlFinal.push(`<span class="linha-cifra">${transporLinhaCompleta(line, tomDeslocamento)}</span>`);
+            } else {
+                htmlFinal.push(`<span class="linha-letra">${line}</span>`);
+            }
+        }
+        document.getElementById('viewTexto').innerHTML = htmlFinal.join('');
+        let corTexto = getPaletaColor(document.getElementById('cfgText').value);
+        document.getElementById('viewTexto').style.color = corTexto;
+        document.getElementById('titulo').innerText = musicas[indexAtual].n.toUpperCase();
+        
+        const blocoNav = document.getElementById('blocoNavegacaoSetlist');
+        if (modoShow && setlistIds.length > 0) {
+            blocoNav.style.display = "flex";
+            document.getElementById('contadorSetlist').innerText = `Música ${posicaoSetlistAtual + 1} de ${setlistIds.length}`;
+        } else {
+            blocoNav.style.display = "none";
+        }
+    }
+
+    function registrarNoHistorico(nomeMusica) {
+        let id = musicas.findIndex(m => m.n === nomeMusica);
+        if(id === -1) return;
+        historicoIds = historicoIds.filter(x => x !== id);
+        historicoIds.unshift(id);
+        if(historicoIds.length > 20) historicoIds.pop();
+        localStorage.setItem('historico_flash', JSON.stringify(historicoIds));
+    }
+
+    function carregarMusica(idx) { 
+        pararMotor();
+        if (idx < 0 || !musicas[idx]) return;
+        indexAtual = idx;
+        registrarNoHistorico(musicas[indexAtual].n);
+        txtBase = musicas[indexAtual].t;
+        scrollAtivo = false;
+        tomDeslocamento = 0;
+        document.getElementById('tomVal').innerText = "0";
+        document.getElementById('txtBtnPlay').innerHTML = "▶ PLAY";
+        document.getElementById('txtBtnPlay').className = "text-verde";
+        renderizarCifra();
+        abrirTela('telaCifra');
+        document.getElementById('telaCifra').scrollTo(0,0);
+        posicaoDecimal = 0;
+    }
+
+    function navMusica(d) { 
+        pararMotor(); 
+        scrollAtivo = false;
+        document.getElementById('txtBtnPlay').innerHTML = "▶ PLAY";
+        document.getElementById('txtBtnPlay').className = "text-verde";
+        if (modoShow && setlistIds.length > 0) {
+            let totalSet = setlistIds.length;
+            posicaoSetlistAtual = (posicaoSetlistAtual + d) % totalSet;
+            if (posicaoSetlistAtual < 0) posicaoSetlistAtual += totalSet;
+            carregarMusica(setlistIds[posicaoSetlistAtual]);
+        } else if (musicas.length > 0) {
+            let novoIdx = (indexAtual + d) % musicas.length;
+            if (novoIdx < 0) novoIdx += musicas.length;
+            carregarMusica(novoIdx);
+        }
+    }
+
+    function iniciarShow() { 
+        if(setlistIds.length > 0) { 
+            modoShow = true; 
+            posicaoSetlistAtual = 0; 
+            carregarMusica(setlistIds[0]); 
+        } else {
+            alert("Adicione músicas à setlist primeiro!");
+        }
+    }
+
+    function abrirEditor() { 
+        if (indexAtual !== -1 && musicas[indexAtual]) { 
+            pararMotor(); 
+            document.getElementById('areaEdicao').value = txtBase; 
+            document.getElementById('telaEditor').style.display = 'flex'; 
+        } 
+    }
+    
+    async function salvarEdicao() { 
+        if (indexAtual !== -1 && musicas[indexAtual]) { 
+            txtBase = document.getElementById('areaEdicao').value; 
+            musicas[indexAtual].t = txtBase; 
+            await salvarNoBanco(musicas[indexAtual].n, txtBase, musicas[indexAtual].origem || "Solto");
+            renderizarCifra(); 
+            document.getElementById('telaEditor').style.display = 'none'; 
+        } 
+    }
+
+    // ==================== ESTILOS ====================
+    function getPaletaColor(percent) {
+        const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d'); canvas.width = 101; canvas.height = 1;
+        const grad = ctx.createLinearGradient(0, 0, 101, 0);
+        grad.addColorStop(0, "#000"); grad.addColorStop(0.1, "#111"); grad.addColorStop(0.2, "#fff"); grad.addColorStop(0.3, "#ff0000"); grad.addColorStop(0.5, "#ffff00"); grad.addColorStop(0.6, "#00ff00"); grad.addColorStop(0.8, "#00ffff"); grad.addColorStop(0.9, "#0000ff"); grad.addColorStop(1, "#ff00ff");
+        ctx.fillStyle = grad; ctx.fillRect(0, 0, 101, 1);
+        return `rgb(${ctx.getImageData(percent, 0, 1, 1).data.slice(0,3).join(',')})`;
+    }
+
+    function aplicarEstilos(deveSalvar = false) {
+        let bg = getPaletaColor(document.getElementById('cfgBg').value);
+        let txt = getPaletaColor(document.getElementById('cfgText').value);
+        let sz = document.getElementById('cfgSize').value;
+        
+        document.documentElement.style.setProperty('--dynamic-bg', bg);
+        document.documentElement.style.setProperty('--dynamic-text', txt);
+        document.documentElement.style.setProperty('--font-size', sz + 'px');
+        document.documentElement.style.setProperty('--font-weight', isBold ? '900' : '400');
+        
+        const viewTexto = document.getElementById('viewTexto');
+        if(viewTexto) {
+            viewTexto.style.color = txt;
+        }
+        
+        document.getElementById('previewBg').style.backgroundColor = bg;
+        document.getElementById('previewText').style.backgroundColor = txt;
+        
+        if(deveSalvar) {
+            let familia = getComputedStyle(document.documentElement).getPropertyValue('--current-family').trim();
+            localStorage.setItem('flash_prefs', JSON.stringify({
+                bg: document.getElementById('cfgBg').value,
+                text: document.getElementById('cfgText').value,
+                size: sz,
+                bold: isBold,
+                family: familia.replace(/['"]/g, "")
+            }));
+        }
+    }
+
+    function toggleBold() { 
+        isBold = !isBold; 
+        document.getElementById('btnBold').classList.toggle('active'); 
+        aplicarEstilos(true); 
+    }
+    
+    function setFonte(f, el) { 
+        document.querySelectorAll('.font-option').forEach(o => o.classList.remove('active'));
+        el.classList.add('active');
+        document.documentElement.style.setProperty('--current-family', f);
+        aplicarEstilos(true);
+    }
+
+    function carregarPreferenciasSalvas() {
+        let salvas = localStorage.getItem('flash_prefs');
+        if(salvas) {
+            try {
+                let prefs = JSON.parse(salvas);
+                document.getElementById('cfgBg').value = prefs.bg || 3;
+                document.getElementById('cfgText').value = prefs.text || 20;
+                document.getElementById('cfgSize').value = prefs.size || 18;
+                isBold = prefs.bold || false;
+                if(isBold) document.getElementById('btnBold').classList.add('active');
+                if(prefs.family) {
+                    document.documentElement.style.setProperty('--current-family', prefs.family);
+                    document.querySelectorAll('.font-option').forEach(opt => opt.classList.remove('active'));
+                    document.querySelectorAll('.font-option').forEach(el => {
+                        if(el.innerText.includes(prefs.family) || el.outerHTML.includes(prefs.family)) el.classList.add('active');
+                    });
+                }
+            } catch(e){}
+        }
+        aplicarEstilos(false);
+    }
+
+    // ==================== EVENTOS TOUCH ====================
+    let lastTap = 0;
+    const containerCifra2 = document.getElementById('telaCifra');
+    if(containerCifra2) {
+        containerCifra2.addEventListener('touchstart', function(e) {
+            tocandoTela = true; pararMotor();
+            let now = Date.now();
+            
+            if(now - lastTap < 300) {
+                toggleRealFullscreen();
+            }
+            lastTap = now;
+            
+            setTimeout(() => {
+                if(!fullscreenActive) {
+                    document.getElementById('headerCifra').classList.toggle('ui-hidden');
+                    document.getElementById('footerCifra').classList.toggle('footer-hidden');
+                }
+            }, 100);
+        }, {passive: true});
+
+        containerCifra2.addEventListener('touchend', function(e) {
+            posicaoDecimal = containerCifra2.scrollTop;
+            setTimeout(() => {
+                tocandoTela = false;
+                if(scrollAtivo) iniciarMotor();
+            }, 500);
+        }, {passive: true});
+    }
+
+    // ==================== INICIALIZAÇÃO ====================
+    window.onload = async () => {
+        carregarPreferenciasSalvas();
+        await initDatabase();
+        musicas = await buscarMusicasNoBanco();
+        
+        try {
+            let salvas = localStorage.getItem('setlist_flash');
+            if(salvas) setlistIds = JSON.parse(salvas);
+            let histSalvo = localStorage.getItem('historico_flash');
+            if(histSalvo) historicoIds = JSON.parse(histSalvo);
+        } catch(e){}
+        
+        if(musicas.length === 0) {
+            await salvarNoBanco("Sertanejo - Evidencias", "Tom: E\nE\nQuando eu digo que não quero mais você\nF#m\nÉ porque eu te amo", "Sertanejo");
+            await salvarNoBanco("Rock - Tempo Perdido", "Tom: C\nC\nTodos os dias antes de dormir\nAm\nLembro e esqueço como foi o dia", "Rock");
+            musicas = await buscarMusicasNoBanco();
+        }
+        
+        renderizarGerenciadorPastas();
+        document.getElementById('telaHome').addEventListener('click', () => { fecharMenuHome(); limparEFecharBuscaHome(); });
+    };
 </script>
 </body>
 </html>
